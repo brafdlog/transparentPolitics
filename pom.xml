@@ -4,6 +4,10 @@
   <artifactId>Fantasy-Government</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   
+   <properties>
+        <resteasy.version>3.0.9.Final</resteasy.version>
+    </properties>
+  
   <repositories>
 		<repository>
 			<id>JBoss repository</id>
@@ -16,17 +20,17 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
-			<version>3.0.4.Final</version>
+			<version>${resteasy.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-client</artifactId>
-			<version>3.0.10.Final</version>
+			<version>${resteasy.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.jboss.resteasy</groupId>
 		    <artifactId>resteasy-jackson-provider</artifactId>
-		    <version>3.0.4.Final</version>
+		    <version>${resteasy.version}</version>
 		</dependency>
 		
 	</dependencies>
