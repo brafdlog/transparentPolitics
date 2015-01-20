@@ -1,0 +1,24 @@
+import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
+@JsonSerialize(include=Inclusion.NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown=true)
+public class {{ class_name|firstcase }} {
+	
+	{% for member in class_members -%}
+		private {{ member.type }} {{ member.name }};
+	{% endfor -%}
+
+	{% for member in class_members %}
+	public {{ member.type }} get{{ member.name|firstcase }}() {
+		return this.{{ member.name }};
+	}
+	public void set{{ member.name|firstcase }}({{ member.type }} value) {
+		this.{{ member.name }} = value;
+	}
+	{%- endfor %}
+
+}
