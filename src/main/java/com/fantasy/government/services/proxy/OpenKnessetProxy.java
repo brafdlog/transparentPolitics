@@ -1,4 +1,4 @@
-package com.fantasy.government.rest;
+package com.fantasy.government.services.proxy;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -24,8 +24,6 @@ public class OpenKnessetProxy {
 		GovMembersListView getMembers(@QueryParam("api_key") String key);
 	}
 
-	@GET
-	@Path("/members")
 	public GovMembersListView getMembers() {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target("https://oknesset.org/");
