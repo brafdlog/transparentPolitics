@@ -10,11 +10,13 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.springframework.stereotype.Component;
 
 import com.fantasy.government.rest.data.GovMembersListView;
 
 @Path("/proxy/openknesset")
 @Produces(MediaType.APPLICATION_JSON)
+@Component
 public class OpenKnessetProxy {
 	
 	interface OpenKnesset {
