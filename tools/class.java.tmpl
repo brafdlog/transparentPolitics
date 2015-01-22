@@ -9,14 +9,14 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 public class {{ class_name|firstcase }} {
 	
 	{% for member in class_members -%}
-		private {{ member.type }} {{ member.name }};
+		private {{ member.type|modeltype }} {{ member.name }};
 	{% endfor -%}
 
 	{% for member in class_members %}
-	public {{ member.type }} get{{ member.name|firstcase }}() {
+	public {{ member.type|modeltype }} get{{ member.name|firstcase }}() {
 		return this.{{ member.name }};
 	}
-	public void set{{ member.name|firstcase }}({{ member.type }} value) {
+	public void set{{ member.name|firstcase }}({{ member.type|modeltype }} value) {
 		this.{{ member.name }} = value;
 	}
 	{%- endfor %}
