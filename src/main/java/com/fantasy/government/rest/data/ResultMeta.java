@@ -1,5 +1,11 @@
 package com.fantasy.government.rest.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonInclude(Include.NON_EMPTY)
 public class ResultMeta {
 	
 	private String next;

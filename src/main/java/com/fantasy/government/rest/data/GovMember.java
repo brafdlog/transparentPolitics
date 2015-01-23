@@ -2,12 +2,12 @@ package com.fantasy.government.rest.data;
 
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-@JsonSerialize(include=Inclusion.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown=true)
+@JsonInclude(Include.NON_EMPTY)
 public class GovMember {
 	
 	private String name;
