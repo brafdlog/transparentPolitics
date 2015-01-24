@@ -1,4 +1,4 @@
-package com.fantasy.government.services.proxy;
+package com.fantasy.government.dao.openknesset;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -12,8 +12,6 @@ import javax.ws.rs.core.MediaType;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.springframework.stereotype.Component;
 
-import com.fantasy.government.rest.data.GovMembersListView;
-
 @Path("/proxy/openknesset")
 @Produces(MediaType.APPLICATION_JSON)
 @Component
@@ -23,17 +21,17 @@ public class OpenKnessetProxy {
 		@GET
 		@Path("api/v2/member/")
 		@Produces(MediaType.APPLICATION_JSON)
-		GovMembersListView getMembers(@QueryParam("api_key") String key);
+		OpenKnessetGovMembersList getMembers(@QueryParam("api_key") String key);
 	}
 
-	public GovMembersListView getMembers() {
+	public OpenKnessetGovMembersList getMembers() {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target("https://oknesset.org/");
 		ResteasyWebTarget rtarget = (ResteasyWebTarget)target;
 		
 		OpenKnesset proxy = rtarget.proxy(OpenKnesset.class);
 		try {
-			GovMembersListView res = proxy.getMembers("special-key");
+			OpenKnessetGovMembersList res = proxy.getMembers("special-key");
 			return res;
 		} catch (Exception e) {
 			e.printStackTrace();

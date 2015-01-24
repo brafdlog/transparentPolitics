@@ -1,4 +1,4 @@
-package com.fantasy.government.rest.data;
+package com.fantasy.government.services.data;
 
 import java.util.Date;
 import java.util.List;
@@ -6,10 +6,11 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_EMPTY)
-public class GovMember {
+public class OpenKnessetGovMember implements GovMember {
 
     private Integer id;
     private String name;
@@ -55,6 +56,7 @@ public class GovMember {
     private Integer bills_stats_pre;
     private String img_url;
 
+    @Override
     public String getName() {
         return this.name;
     }
@@ -119,6 +121,7 @@ public class GovMember {
         this.absolute_url = value;
     }
 
+    @Override
     public String getGender() {
         return this.gender;
     }
@@ -287,7 +290,9 @@ public class GovMember {
         this.bills_stats_approved = value;
     }
 
-    public Boolean getIs_current() {
+    @Override
+    @JsonProperty("is_current")
+    public Boolean isCurrent() {
         return this.is_current;
     }
 
@@ -375,6 +380,7 @@ public class GovMember {
         this.date_of_birth = value;
     }
 
+    @Override
     public Integer getId() {
         return this.id;
     }
@@ -391,12 +397,19 @@ public class GovMember {
         this.bills_stats_pre = value;
     }
 
-    public String getImg_url() {
+    @Override
+    @JsonProperty("img_url")
+    public String getImageUrl() {
         return this.img_url;
     }
 
     public void setImg_url(String value) {
         this.img_url = value;
+    }
+    
+    @Override
+    public String toString() {
+        return id + " " + name;
     }
 
 }
