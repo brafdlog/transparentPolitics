@@ -1,5 +1,6 @@
 package com.fantasy.government.rest;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class TransparentPoliticsServiceRest {
 	}
 	
     @RequestMapping("/members/{memberId}")
-    public GovMemberRdt getMember(@PathVariable Integer memberId) {
+    public GovMemberRdt getMember(@PathVariable Integer memberId) throws IOException {
         GovMember govMember = govMemberDAO.getGovMember(memberId);
         GovMemberRdt govMemberRdt = restTypeConverter.toGovMemberRdt(govMember);
         return govMemberRdt;
@@ -50,7 +51,7 @@ public class TransparentPoliticsServiceRest {
 	}
 	
     @RequestMapping("/parties/{partyId}")
-    public GovPartyRdt getParty(@PathVariable Integer partyId) {
+    public GovPartyRdt getParty(@PathVariable Integer partyId) throws IOException {
         GovParty govParty = govPartyDAO.getParty(partyId);
         GovPartyRdt govPartyRdt = restTypeConverter.toGovPartyRdt(govParty);
         return govPartyRdt;

@@ -1,5 +1,6 @@
 package com.fantasy.government.dao;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class GovMemberDAO {
         return openKnessetApi.getMembers(ONLY_CURRENT_MEMBERS).getObjects();
     }
     
-    public GovMember getGovMember(Integer memberId) {
+    public GovMember getGovMember(Integer memberId) throws IOException {
         return openKnessetApi.getMember(memberId);
     }
 }
