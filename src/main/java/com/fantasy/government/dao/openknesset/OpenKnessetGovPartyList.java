@@ -2,22 +2,22 @@ package com.fantasy.government.dao.openknesset;
 
 import java.util.List;
 
-import com.fantasy.government.services.data.OpenKnessetGovMember;
+import com.fantasy.government.dao.data.OpenKnessetGovParty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 @JsonInclude(Include.NON_EMPTY)
-public class OpenKnessetGovMembersList {
+public class OpenKnessetGovPartyList {
 	
-	protected List<OpenKnessetGovMember> objects;
+	protected List<OpenKnessetGovParty> objects;
 	protected OpenKnessetResultMeta meta;
 	
-	public List<OpenKnessetGovMember> getObjects() {
+	public List<OpenKnessetGovParty> getObjects() {
 		return this.objects;
 	}
-	public void setObjects(List<OpenKnessetGovMember> value) {
+	public void setObjects(List<OpenKnessetGovParty> value) {
 		this.objects = value;
 	}
 	public OpenKnessetResultMeta getMeta() {

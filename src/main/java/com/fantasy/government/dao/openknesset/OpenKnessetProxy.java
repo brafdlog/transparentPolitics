@@ -17,34 +17,38 @@ import org.springframework.stereotype.Component;
 @Component
 public class OpenKnessetProxy {
 	
-	interface OpenKnesset {
+	private static final String API_KEY = "special-key";
+    private static final int NO_PAGING_OF_RESULTS = 0;
+
+    interface OpenKnesset {
 		@GET
 		@Path("api/v2/member/")
 		@Produces(MediaType.APPLICATION_JSON)
-		OpenKnessetGovMembersList getMembers(@QueryParam("api_key") String key, @QueryParam("is_current") Boolean isCurrent);
+		OpenKnessetGovMemberList getMembers(@QueryParam("api_key") String key, @QueryParam("limit") Integer limit, @QueryParam("is_current") Boolean isCurrent);
 		
 		@GET
         @Path("api/v2/member/")
         @Produces(MediaType.APPLICATION_JSON)
-        OpenKnessetGovMembersList getAllMembers(@QueryParam("api_key") String key);
+        OpenKnessetGovMemberList getAllMembers(@QueryParam("api_key") String key, @QueryParam("limit") Integer limit);
+		
+        @GET
+        @Path("api/v2/party/")
+        @Produces(MediaType.APPLICATION_JSON)
+        OpenKnessetGovPartyList getAllParties(@QueryParam("api_key") String key, @QueryParam("limit") Integer limit);
 	}
 	
-	public OpenKnessetGovMembersList getAllMembers() {
+	public OpenKnessetGovMemberList getAllMembers() {
 	    return getMembers(null);
 	}
 
-	public OpenKnessetGovMembersList getMembers(Boolean onlyCurrent) {
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("https://oknesset.org/");
-		ResteasyWebTarget rtarget = (ResteasyWebTarget)target;
-		
-		OpenKnesset proxy = rtarget.proxy(OpenKnesset.class);
+	public OpenKnessetGovMemberList getMembers(Boolean onlyCurrent) {
+		OpenKnesset proxy = getOpenKnessetProxy();
 		try {
-		    OpenKnessetGovMembersList res;
+		    OpenKnessetGovMemberList res;
 		    if (onlyCurrent != null) {
-		        res = proxy.getMembers("special-key", onlyCurrent);
+		        res = proxy.getMembers(API_KEY, NO_PAGING_OF_RESULTS, onlyCurrent);
 		    } else {
-		        res = proxy.getAllMembers("special-key");
+		        res = proxy.getAllMembers(API_KEY, NO_PAGING_OF_RESULTS);
 		    }
 			return res;
 		} catch (Exception e) {
@@ -53,4 +57,25 @@ public class OpenKnessetProxy {
 		
 		return null;
 	}
+	
+	public OpenKnessetGovPartyList getAllParties() {
+        OpenKnesset proxy = getOpenKnessetProxy();
+        try {
+            OpenKnessetGovPartyList partyList = proxy.getAllParties(API_KEY, NO_PAGING_OF_RESULTS);
+            return partyList;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return null;
+    }
+
+    private OpenKnesset getOpenKnessetProxy() {
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client.target("https://oknesset.org/");
+        ResteasyWebTarget rtarget = (ResteasyWebTarget)target;
+        
+        OpenKnesset proxy = rtarget.proxy(OpenKnesset.class);
+        return proxy;
+    }
 }

@@ -1,8 +1,9 @@
-package com.fantasy.government.services.data;
+package com.fantasy.government.dao.data;
 
 import java.util.Date;
 import java.util.List;
 
+import com.fantasy.government.services.data.GovMember;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

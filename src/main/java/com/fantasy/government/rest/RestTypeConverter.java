@@ -1,14 +1,16 @@
 package com.fantasy.government.rest;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fantasy.government.rest.data.GovMemberRdt;
 import com.fantasy.government.rest.data.GovMembersListRdt;
+import com.fantasy.government.rest.data.GovPartyListRdt;
 import com.fantasy.government.rest.data.GovPartyRdt;
 import com.fantasy.government.services.GovMemberService;
+import com.fantasy.government.services.GovPartyService;
 import com.fantasy.government.services.data.GovMember;
 import com.fantasy.government.services.data.GovParty;
 
@@ -17,8 +19,11 @@ public class RestTypeConverter {
     
     @Autowired
     private GovMemberService memberService;
+    
+    @Autowired
+    private GovPartyService partyService;
 
-    public GovMembersListRdt toGovMemberListRdt(List<? extends GovMember> govMembers) {
+    public GovMembersListRdt toGovMemberListRdt(Collection<? extends GovMember> govMembers) {
         GovMembersListRdt membersListRdt = new GovMembersListRdt();
         for (GovMember govMember : govMembers) {
             Integer memberGrade = memberService.getMemberGrade(govMember);
@@ -35,6 +40,16 @@ public class RestTypeConverter {
         govMemberRdt.setName(govMember.getName());
         govMemberRdt.setGrade(memberGrade);
         return govMemberRdt;
+    }
+    
+    public GovPartyListRdt toGovPartyListRdt(Collection<? extends GovParty> govParties) {
+        GovPartyListRdt govPartyListRdt = new GovPartyListRdt();
+        for (GovParty party : govParties) {
+            Integer partyGrade = partyService.getPartyGrade(party);
+            GovPartyRdt partyRdt = toGovPartyRdt(party, partyGrade);
+            govPartyListRdt.getParties().add(partyRdt);
+        }
+        return govPartyListRdt;
     }
     
     public GovPartyRdt toGovPartyRdt(GovParty govParty, Integer partyGrade) {

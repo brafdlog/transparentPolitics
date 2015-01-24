@@ -4,13 +4,12 @@ import java.util.Random;
 
 import org.springframework.stereotype.Component;
 
-import com.fantasy.government.services.data.GovMember;
+import com.fantasy.government.services.data.GovParty;
 
 @Component
-public class GovMemberService {
+public class GovPartyService {
 
-    public Integer getMemberGrade(GovMember member) {
+    public Integer getPartyGrade(GovParty party) {
         return new Random().nextInt(100);
     }
-    
 }

@@ -7,14 +7,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fantasy.government.dao.GovMemberDAO;
+import com.fantasy.government.dao.GovPartyDAO;
 import com.fantasy.government.rest.data.GovMembersListRdt;
+import com.fantasy.government.rest.data.GovPartyListRdt;
 import com.fantasy.government.services.data.GovMember;
+import com.fantasy.government.services.data.GovParty;
 
 @RestController
 public class TransparentPoliticsServiceRest {
 	
     @Autowired
     private GovMemberDAO govMemberDAO;
+    
+    @Autowired
+    private GovPartyDAO govPartyDAO;
     
 	@Autowired
 	private RestTypeConverter restTypeConverter;
@@ -24,5 +30,12 @@ public class TransparentPoliticsServiceRest {
 	    List<? extends GovMember> allGovMembers = govMemberDAO.getCurrentGovMembers();
 	    GovMembersListRdt govMemberListView = restTypeConverter.toGovMemberListRdt(allGovMembers);
         return govMemberListView;
+	}
+	
+	@RequestMapping("/parties")
+	public GovPartyListRdt getParties() {
+	    List<? extends GovParty> allParties = govPartyDAO.getAllParties();
+	    GovPartyListRdt govPartyListRdt = restTypeConverter.toGovPartyListRdt(allParties);
+	    return govPartyListRdt;
 	}
 }
