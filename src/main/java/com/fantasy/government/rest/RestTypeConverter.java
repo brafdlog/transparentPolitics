@@ -26,14 +26,14 @@ public class RestTypeConverter {
     public GovMembersListRdt toGovMemberListRdt(Collection<? extends GovMember> govMembers) {
         GovMembersListRdt membersListRdt = new GovMembersListRdt();
         for (GovMember govMember : govMembers) {
-            Integer memberGrade = memberService.getMemberGrade(govMember);
-            GovMemberRdt govMemberRdt = toGovMemberRdt(govMember, memberGrade);
+            GovMemberRdt govMemberRdt = toGovMemberRdt(govMember);
             membersListRdt.getMembers().add(govMemberRdt);
         }
         return membersListRdt;
     }
     
-    public GovMemberRdt toGovMemberRdt(GovMember govMember, Integer memberGrade) {
+    public GovMemberRdt toGovMemberRdt(GovMember govMember) {
+        Integer memberGrade = memberService.getMemberGrade(govMember);
         GovMemberRdt govMemberRdt = new GovMemberRdt();
         govMemberRdt.setId(govMember.getId());
         govMemberRdt.setImageUrl(govMember.getImageUrl());
@@ -45,16 +45,16 @@ public class RestTypeConverter {
     public GovPartyListRdt toGovPartyListRdt(Collection<? extends GovParty> govParties) {
         GovPartyListRdt govPartyListRdt = new GovPartyListRdt();
         for (GovParty party : govParties) {
-            Integer partyGrade = partyService.getPartyGrade(party);
             String partyImageUrl = partyService.getPartyImageUrl(party);
-            GovPartyRdt partyRdt = toGovPartyRdt(party, partyGrade);
+            GovPartyRdt partyRdt = toGovPartyRdt(party);
             partyRdt.setImageUrl(partyImageUrl);
             govPartyListRdt.getParties().add(partyRdt);
         }
         return govPartyListRdt;
     }
     
-    public GovPartyRdt toGovPartyRdt(GovParty govParty, Integer partyGrade) {
+    public GovPartyRdt toGovPartyRdt(GovParty govParty) {
+        Integer partyGrade = partyService.getPartyGrade(govParty);
         GovPartyRdt govPartyRdt = new GovPartyRdt();
         govPartyRdt.setId(govParty.getId());
         govPartyRdt.setImageUrl(govParty.getImageUrl());

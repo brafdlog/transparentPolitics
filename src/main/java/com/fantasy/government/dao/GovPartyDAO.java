@@ -17,4 +17,8 @@ public class GovPartyDAO {
     public List<? extends GovParty> getAllParties() {
         return openKnessetApi.getAllParties().getObjects();
     }
+    
+    public GovParty getParty(Integer partyId) {
+        return openKnessetApi.getParty(partyId);
+    }
 }

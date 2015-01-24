@@ -22,4 +22,8 @@ public class GovMemberDAO {
     public List<? extends GovMember> getCurrentGovMembers() {
         return openKnessetApi.getMembers(ONLY_CURRENT_MEMBERS).getObjects();
     }
+    
+    public GovMember getGovMember(Integer memberId) {
+        return openKnessetApi.getMember(memberId);
+    }
 }

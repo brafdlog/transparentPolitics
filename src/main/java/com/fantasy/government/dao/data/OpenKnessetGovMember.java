@@ -18,14 +18,14 @@ public class OpenKnessetGovMember implements GovMember {
     private String place_of_birth;
     private Date end_date;
     private String resource_uri;
-    private List<String> links;
+    private List<OpenKnessetUrl> links;
     private List<String> video_about;
     private Integer year_of_aliyah;
     private String absolute_url;
     private String gender;
     private String bills_uri;
     private String fax;
-    private List<String> detailed_roles;
+    private List<OpenKnessetRole> detailed_roles;
     private Integer mmms_count;
     private Float average_weekly_presence_hours;
     private String email;
@@ -44,7 +44,7 @@ public class OpenKnessetGovMember implements GovMember {
     private String party_url;
     private Integer bills_stats_approved;
     private Boolean is_current;
-    private List<String> committees;
+    private List<List<String>> committees;
     private Integer bills_stats_first;
     private Integer residence_centrality;
     private String place_of_residence_lon;
@@ -90,12 +90,12 @@ public class OpenKnessetGovMember implements GovMember {
         this.resource_uri = value;
     }
 
-    public List<String> getLinks() {
+    public List<OpenKnessetUrl> getLinks() {
         return this.links;
     }
 
-    public void setLinks(List<String> value) {
-        this.links = value;
+    public void setLinks(List<OpenKnessetUrl> links) {
+        this.links = links;
     }
 
     public List<String> getVideo_about() {
@@ -147,11 +147,11 @@ public class OpenKnessetGovMember implements GovMember {
         this.fax = value;
     }
 
-    public List<String> getDetailed_roles() {
+    public List<OpenKnessetRole> getDetailed_roles() {
         return this.detailed_roles;
     }
 
-    public void setDetailed_roles(List<String> value) {
+    public void setDetailed_roles(List<OpenKnessetRole> value) {
         this.detailed_roles = value;
     }
 
@@ -301,11 +301,11 @@ public class OpenKnessetGovMember implements GovMember {
         this.is_current = value;
     }
 
-    public List<String> getCommittees() {
+    public List<List<String>> getCommittees() {
         return this.committees;
     }
 
-    public void setCommittees(List<String> value) {
+    public void setCommittees(List<List<String>> value) {
         this.committees = value;
     }
 
