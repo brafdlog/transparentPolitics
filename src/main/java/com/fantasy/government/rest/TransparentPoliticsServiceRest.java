@@ -21,7 +21,7 @@ public class TransparentPoliticsServiceRest {
 	
 	@RequestMapping("/members")
 	public GovMembersListRdt getMembers() {
-	    List<? extends GovMember> allGovMembers = govMemberDAO.getAllGovMembers();
+	    List<? extends GovMember> allGovMembers = govMemberDAO.getCurrentGovMembers();
 	    GovMembersListRdt govMemberListView = restTypeConverter.toGovMemberListRdt(allGovMembers);
         return govMemberListView;
 	}

@@ -11,10 +11,15 @@ import com.fantasy.government.services.data.GovMember;
 @Component
 public class GovMemberDAO {
 
+    private static final Boolean ONLY_CURRENT_MEMBERS = Boolean.TRUE;
+    
     @Autowired
     private OpenKnessetProxy openKnessetApi;
     
-    public List<? extends GovMember> getAllGovMembers() {
-        return openKnessetApi.getMembers().getObjects();
+    /**
+     * Returns a list of all current government members.
+     */
+    public List<? extends GovMember> getCurrentGovMembers() {
+        return openKnessetApi.getMembers(ONLY_CURRENT_MEMBERS).getObjects();
     }
 }
