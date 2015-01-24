@@ -46,7 +46,9 @@ public class RestTypeConverter {
         GovPartyListRdt govPartyListRdt = new GovPartyListRdt();
         for (GovParty party : govParties) {
             Integer partyGrade = partyService.getPartyGrade(party);
+            String partyImageUrl = partyService.getPartyImageUrl(party);
             GovPartyRdt partyRdt = toGovPartyRdt(party, partyGrade);
+            partyRdt.setImageUrl(partyImageUrl);
             govPartyListRdt.getParties().add(partyRdt);
         }
         return govPartyListRdt;
