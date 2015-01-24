@@ -10,6 +10,4 @@ Currently implemented:
 
 /parties/{party id}
 
-
-TODO:
-1. Add a caching layer (I am working on adding Redis)
+Redis caching is implemented. To use just install and run redis on local machine

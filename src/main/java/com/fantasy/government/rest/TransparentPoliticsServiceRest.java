@@ -30,7 +30,7 @@ public class TransparentPoliticsServiceRest {
 	private RestTypeConverter restTypeConverter;
 	
 	@RequestMapping("/members")
-	public GovMembersListRdt getMembers() {
+	public GovMembersListRdt getMembers() throws IOException {
 	    List<? extends GovMember> allGovMembers = govMemberDAO.getCurrentGovMembers();
 	    GovMembersListRdt govMemberListView = restTypeConverter.toGovMemberListRdt(allGovMembers);
         return govMemberListView;
@@ -44,7 +44,7 @@ public class TransparentPoliticsServiceRest {
     }
 	
 	@RequestMapping("/parties")
-	public GovPartyListRdt getParties() {
+	public GovPartyListRdt getParties() throws IOException {
 	    List<? extends GovParty> allParties = govPartyDAO.getAllParties();
 	    GovPartyListRdt govPartyListRdt = restTypeConverter.toGovPartyListRdt(allParties);
 	    return govPartyListRdt;
