@@ -4,6 +4,7 @@ from jinja2 import Environment, PackageLoader
 from termcolor import colored
 import json
 import sys
+import textwrap
 
 class KnessetAPIParser():
 	def __init__(self):
@@ -43,17 +44,22 @@ class KnessetAPIParser():
 		return False
 
 	def parseSchema(self, resource):
-		response = request.urlopen('https://oknesset.org/api/v2/doc/schema/' + resource).read().decode('utf-8')
-		j = json.loads(response)
+		try:
+			response = request.urlopen('https://oknesset.org/api/v2/doc/schema/' + resource).read().decode('utf-8')
+			j = json.loads(response)
 
-		models = []
-		for key in j['models']:
-			newModel = self.parseModel(key, j['models'][key])
-			if (newModel):
-				models.append(newModel)
+			models = []
+			for key in j['models']:
+				newModel = self.parseModel(key, j['models'][key])
+				if (newModel):
+					models.append(newModel)
 
-		for m in models:
-			print(self.__template__.render(**m))
+			for m in models:
+				filename = KnessetAPIParser.firstCase(m['class_name'] + ".java");
+				with open(filename, "w") as f:
+					f.write(self.__template__.render(**m))
+		except Exception as e:
+			print("Error! " + e)
 
 	def parseModel(self, modelName, modelMap):
 		members = []
@@ -71,14 +77,14 @@ class KnessetAPIParser():
 
 if __name__ == '__main__':
 	# retrieve argument mapping
-	args = {k: v for k,v in [arg.split('=') for arg in sys.argv[1:]]}
+	args = {k: v[0] for k,*v in [(arg + "=").split('=') for arg in sys.argv[1:]]}
 	
 	if '--schema' in args:
 		parser = KnessetAPIParser();
 		parser.parseSchema(args['--schema'])
 	else:
-		print("""
+		print(textwrap.dedent("""\
 			Usage: {0} [--schema=SCHEMA]
 
 			- schema : The SCHEMA you'd like to generate JSON POJOs for
-			""".format(sys.argv[0]))
+			""").format(sys.argv[0]))
