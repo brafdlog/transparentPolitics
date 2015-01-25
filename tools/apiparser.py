@@ -24,9 +24,8 @@ class KnessetAPIParser():
 			'datetime': "java.util.Date"
 		}
 
-	
 	def firstCase(value):
-		return value[0:1].upper() + value[1:]
+		return value[:1].upper() + value[1:]
 
 	def translateType(self, value):
 		if value in self.__typeMap__:
@@ -59,7 +58,7 @@ class KnessetAPIParser():
 				with open(filename, "w") as f:
 					f.write(self.__template__.render(**m))
 		except Exception as e:
-			print("Error! " + e)
+			print("Error: " + str(e.reason))
 
 	def parseModel(self, modelName, modelMap):
 		members = []
