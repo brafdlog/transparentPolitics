@@ -76,7 +76,7 @@ class KnessetAPIParser():
 
 if __name__ == '__main__':
 	# retrieve argument mapping
-	args = {k: v[0] for k,*v in [(arg + "=").split('=') for arg in sys.argv[1:]]}
+	args = {k: v[0] for (k,*v) in [(arg + "=").split('=') for arg in sys.argv[1:]]}
 	
 	if '--schema' in args:
 		parser = KnessetAPIParser();
