@@ -1,5 +1,6 @@
 package com.fantasy.government.rest;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class RestTypeConverter {
     @Autowired
     private GovPartyService partyService;
 
-    public GovMembersListRdt toGovMemberListRdt(Collection<? extends GovMember> govMembers) {
+    public GovMembersListRdt toGovMemberListRdt(Collection<? extends GovMember> govMembers) throws IOException {
         GovMembersListRdt membersListRdt = new GovMembersListRdt();
         for (GovMember govMember : govMembers) {
             GovMemberRdt govMemberRdt = toGovMemberRdt(govMember);
@@ -32,7 +33,7 @@ public class RestTypeConverter {
         return membersListRdt;
     }
     
-    public GovMemberRdt toGovMemberRdt(GovMember govMember) {
+    public GovMemberRdt toGovMemberRdt(GovMember govMember) throws IOException {
         Integer memberGrade = memberService.getMemberGrade(govMember);
         GovMemberRdt govMemberRdt = new GovMemberRdt();
         govMemberRdt.setId(govMember.getId());

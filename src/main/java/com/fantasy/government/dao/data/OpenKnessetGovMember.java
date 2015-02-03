@@ -19,7 +19,7 @@ public class OpenKnessetGovMember implements GovMember {
     private Date end_date;
     private String resource_uri;
     private List<OpenKnessetUrl> links;
-    private List<String> video_about;
+//    private List<String> video_about;
     private Integer year_of_aliyah;
     private String absolute_url;
     private String gender;
@@ -31,7 +31,7 @@ public class OpenKnessetGovMember implements GovMember {
     private String email;
     private Integer residence_economy;
     private String party_name;
-    private List<String> videos_related;
+//    private List<String> videos_related;
     private Date date_of_death;
     private Integer average_weekly_presence_rank;
     private Integer bills_stats_proposed;
@@ -44,7 +44,7 @@ public class OpenKnessetGovMember implements GovMember {
     private String party_url;
     private Integer bills_stats_approved;
     private Boolean is_current;
-    private List<List<String>> committees;
+//    private List<List<String>> committees;
     private Integer bills_stats_first;
     private Integer residence_centrality;
     private String place_of_residence_lon;
@@ -98,13 +98,13 @@ public class OpenKnessetGovMember implements GovMember {
         this.links = links;
     }
 
-    public List<String> getVideo_about() {
-        return this.video_about;
-    }
-
-    public void setVideo_about(List<String> value) {
-        this.video_about = value;
-    }
+//    public List<String> getVideo_about() {
+//        return this.video_about;
+//    }
+//
+//    public void setVideo_about(List<String> value) {
+//        this.video_about = value;
+//    }
 
     public Integer getYear_of_aliyah() {
         return this.year_of_aliyah;
@@ -163,6 +163,7 @@ public class OpenKnessetGovMember implements GovMember {
         this.mmms_count = value;
     }
 
+    @Override
     public Float getAverage_weekly_presence_hours() {
         return this.average_weekly_presence_hours;
     }
@@ -195,13 +196,13 @@ public class OpenKnessetGovMember implements GovMember {
         this.party_name = value;
     }
 
-    public List<String> getVideos_related() {
-        return this.videos_related;
-    }
-
-    public void setVideos_related(List<String> value) {
-        this.videos_related = value;
-    }
+//    public List<String> getVideos_related() {
+//        return this.videos_related;
+//    }
+//
+//    public void setVideos_related(List<String> value) {
+//        this.videos_related = value;
+//    }
 
     public Date getDate_of_death() {
         return this.date_of_death;
@@ -219,6 +220,7 @@ public class OpenKnessetGovMember implements GovMember {
         this.average_weekly_presence_rank = value;
     }
 
+    @Override
     public Integer getBills_stats_proposed() {
         return this.bills_stats_proposed;
     }
@@ -251,6 +253,7 @@ public class OpenKnessetGovMember implements GovMember {
         this.votes_count = value;
     }
 
+    @Override
     public Float getAverage_monthly_committee_presence() {
         return this.average_monthly_committee_presence;
     }
@@ -283,6 +286,7 @@ public class OpenKnessetGovMember implements GovMember {
         this.party_url = value;
     }
 
+    @Override
     public Integer getBills_stats_approved() {
         return this.bills_stats_approved;
     }
@@ -301,13 +305,13 @@ public class OpenKnessetGovMember implements GovMember {
         this.is_current = value;
     }
 
-    public List<List<String>> getCommittees() {
-        return this.committees;
-    }
-
-    public void setCommittees(List<List<String>> value) {
-        this.committees = value;
-    }
+//    public List<List<String>> getCommittees() {
+//        return this.committees;
+//    }
+//
+//    public void setCommittees(List<List<String>> value) {
+//        this.committees = value;
+//    }
 
     public Integer getBills_stats_first() {
         return this.bills_stats_first;
@@ -390,6 +394,7 @@ public class OpenKnessetGovMember implements GovMember {
         this.id = value;
     }
 
+    @Override
     public Integer getBills_stats_pre() {
         return this.bills_stats_pre;
     }

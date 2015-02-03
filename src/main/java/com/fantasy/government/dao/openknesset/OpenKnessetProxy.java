@@ -58,7 +58,7 @@ public class OpenKnessetProxy {
         return res;
     }
 
-    public OpenKnessetGovMember getMember(Integer memberId) throws IOException {
+	public OpenKnessetGovMember getMember(Integer memberId) throws IOException {
         // Can't use rest easy's client because the url that doesn't end with / causes redirect and it can't follow redirects
         return HttpUtils.getJsonObjectFromUrl("https://oknesset.org/api/v2/member/" + memberId, OpenKnessetGovMember.class);
     }

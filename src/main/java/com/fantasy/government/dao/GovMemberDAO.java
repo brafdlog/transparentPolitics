@@ -1,6 +1,7 @@
 package com.fantasy.government.dao;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,4 +47,16 @@ public class GovMemberDAO {
         
         return member;
     }
+    
+    public List<GovMember> getAllGovMemebers() throws IOException {
+    	List<GovMember> allGovMembers = new ArrayList<>(120);
+    	List<? extends GovMember> currentGovMembers = getCurrentGovMembers();
+    	
+    	for (GovMember govMember : currentGovMembers) {
+    		govMember = getGovMember(govMember.getId());
+    		allGovMembers.add(govMember);
+    	}
+    	return allGovMembers;
+    }
+ 
 }
