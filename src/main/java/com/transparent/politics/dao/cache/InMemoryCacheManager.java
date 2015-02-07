@@ -52,14 +52,4 @@ public class InMemoryCacheManager implements CacheManager {
         }
     }
 
-    @Override
-    public void lockCache() {
-        readWriteLock.writeLock().lock();        
-    }
-
-    @Override
-    public void unlockCache() {
-        readWriteLock.writeLock().unlock();
-    }
-
 }

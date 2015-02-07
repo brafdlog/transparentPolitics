@@ -69,13 +69,8 @@ public class GovMemberService {
             memberIdToGrade.put(govMember.getId(), memberOverallGrade);
         }
         
-        try {
-            cacheManager.lockCache();
-            GovMembersDataStore govMemberDataStore = new GovMembersDataStore(memberIdToMember, memberIdToGrade);
-            cacheManager.set(GOV_MEMBER_DATA_STORE_CACHE_KEY, govMemberDataStore);
-        } finally {
-            cacheManager.unlockCache();
-        }
+        GovMembersDataStore govMemberDataStore = new GovMembersDataStore(memberIdToMember, memberIdToGrade);
+        cacheManager.set(GOV_MEMBER_DATA_STORE_CACHE_KEY, govMemberDataStore);
         
         isCalculating.set(false);
         long endTime = new Date().getTime();
