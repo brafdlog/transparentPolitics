@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import com.transparent.politics.common.Utils;
 import com.transparent.politics.dao.cache.CacheManager;
 import com.transparent.politics.dao.cache.InMemoryCacheManager;
 import com.transparent.politics.dao.data.OpenKnessetGovMember;
 import com.transparent.politics.dao.openknesset.OpenKnessetProxy;
 import com.transparent.politics.services.data.GovMember;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 @Component
 public class GovMemberDAO {
@@ -31,36 +31,52 @@ public class GovMemberDAO {
     
     /**
      * Returns a list of all current government members.
+     * Each gov member contains only basic information. To get get more detailed info call getAllGovMemebersDetailed
      */
-    public List<? extends GovMember> getCurrentGovMembers() throws IOException {
-        List<OpenKnessetGovMember> currentMembers = cacheManager.get(CURRENT_MEMBERS_CACHE_KEY, new TypeReference<List<OpenKnessetGovMember>>() {});
-        if (currentMembers == null) {
-            currentMembers = openKnessetApi.getMembers(ONLY_CURRENT_MEMBERS).getObjects();
-            cacheManager.set(CURRENT_MEMBERS_CACHE_KEY, currentMembers);
-        }
+    public List<? extends GovMember> getCurrentGovMembersNonDetailed() throws IOException {
+        List<? extends GovMember> currentMembers = openKnessetApi.getMembers(ONLY_CURRENT_MEMBERS).getObjects();
         return currentMembers;
     }
     
-    public GovMember getGovMember(Integer memberId) throws IOException {
-        String cacheKey = MEMBER_CACHE_KEY_PREFIX + memberId;
-        OpenKnessetGovMember member = cacheManager.get(cacheKey, OpenKnessetGovMember.class);
+    public GovMember getGovMember(Integer memberId) throws Exception {
+        int numTries = 0;
+        OpenKnessetGovMember member = null;
+        while (numTries < 5 && member == null) {
+            numTries++;
+            try {
+                member = openKnessetApi.getMember(memberId);
+            } catch (Exception e) {
+                System.out.println("Exception while getting member. Probably too many requests. Sleeping and trying again");
+                member = null;
+                // Need to wait here because exception may be because of too many requests
+                Utils.sleep(2000);
+            }
+        }
+        
         if (member == null) {
-            member = openKnessetApi.getMember(memberId);
-            cacheManager.set(cacheKey, member);
+            throw new Exception("Failed getting gov member with id " + memberId);
         }
         
         return member;
     }
-    
-    public List<GovMember> getAllGovMemebers() throws IOException {
+
+    public List<GovMember> getAllGovMemebersDetailed() throws Exception {
     	List<GovMember> allGovMembers = new ArrayList<>(120);
-    	List<? extends GovMember> currentGovMembers = getCurrentGovMembers();
+    	List<? extends GovMember> currentGovMembers = getCurrentGovMembersNonDetailed();
     	
+    	int memberCounter = 1;
     	for (GovMember govMember : currentGovMembers) {
+    	    if (memberCounter % 5 == 0) {
+    	        System.out.println("Getting member " + memberCounter);
+    	    }
     		govMember = getGovMember(govMember.getId());
     		allGovMembers.add(govMember);
+    		memberCounter++;
+    		
+    		// Need to sleep to prevent too many requsets exception
+    		Utils.sleep(50);
     	}
     	return allGovMembers;
     }
- 
+    
 }

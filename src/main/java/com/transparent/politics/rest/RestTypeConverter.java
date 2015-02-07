@@ -13,6 +13,7 @@ import com.transparent.politics.rest.data.GovPartyRdt;
 import com.transparent.politics.services.GovMemberService;
 import com.transparent.politics.services.GovPartyService;
 import com.transparent.politics.services.data.GovMember;
+import com.transparent.politics.services.data.GovMembersDataStore;
 import com.transparent.politics.services.data.GovParty;
 
 @Component
@@ -24,23 +25,24 @@ public class RestTypeConverter {
     @Autowired
     private GovPartyService partyService;
 
-    public GovMembersListRdt toGovMemberListRdt(Collection<? extends GovMember> govMembers) throws IOException {
+    public GovMembersListRdt toGovMemberListRdt(GovMembersDataStore govMemberDataStore) throws IOException {
         GovMembersListRdt membersListRdt = new GovMembersListRdt();
-        for (GovMember govMember : govMembers) {
-            GovMemberRdt govMemberRdt = toGovMemberRdt(govMember);
+        for (GovMember govMember : govMemberDataStore.getAllMembers()) {
+            GovMemberRdt govMemberRdt = toGovMemberRdt(govMemberDataStore, govMember.getId());
             membersListRdt.getMembers().add(govMemberRdt);
         }
         return membersListRdt;
     }
     
-    public GovMemberRdt toGovMemberRdt(GovMember govMember) throws IOException {
-        Integer memberGrade = memberService.getMemberGrade(govMember);
+    public GovMemberRdt toGovMemberRdt(GovMembersDataStore govMemberDataStore, Integer govMemberId) throws IOException {
+        GovMember govMember = govMemberDataStore.getGovMember(govMemberId);
+        Integer govMemberGrade = govMemberDataStore.getGovMemberGrade(govMemberId);
         GovMemberRdt govMemberRdt = new GovMemberRdt();
         govMemberRdt.setId(govMember.getId());
         govMemberRdt.setImageUrl(govMember.getImageUrl());
         govMemberRdt.setName(govMember.getName());
-        govMemberRdt.setGrade(memberGrade);
         govMemberRdt.setAverageWeeklyPresenceHours(govMember.getAverage_weekly_presence_hours());
+        govMemberRdt.setGrade(govMemberGrade);
         return govMemberRdt;
     }
     

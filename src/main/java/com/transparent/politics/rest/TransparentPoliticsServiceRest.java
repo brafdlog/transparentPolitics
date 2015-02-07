@@ -8,20 +8,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.transparent.politics.dao.GovMemberDAO;
 import com.transparent.politics.dao.GovPartyDAO;
 import com.transparent.politics.rest.data.GovMemberRdt;
 import com.transparent.politics.rest.data.GovMembersListRdt;
 import com.transparent.politics.rest.data.GovPartyListRdt;
 import com.transparent.politics.rest.data.GovPartyRdt;
-import com.transparent.politics.services.data.GovMember;
+import com.transparent.politics.services.GovMemberService;
+import com.transparent.politics.services.data.GovMembersDataStore;
 import com.transparent.politics.services.data.GovParty;
 
 @RestController
 public class TransparentPoliticsServiceRest {
 	
     @Autowired
-    private GovMemberDAO govMemberDAO;
+    private GovMemberService govMemberService;
     
     @Autowired
     private GovPartyDAO govPartyDAO;
@@ -30,16 +30,16 @@ public class TransparentPoliticsServiceRest {
 	private RestTypeConverter restTypeConverter;
 	
 	@RequestMapping("/members")
-	public GovMembersListRdt getMembers() throws IOException {
-	    List<? extends GovMember> allGovMembers = govMemberDAO.getCurrentGovMembers();
-	    GovMembersListRdt govMemberListView = restTypeConverter.toGovMemberListRdt(allGovMembers);
+	public GovMembersListRdt getMembers() throws Exception {
+	    GovMembersDataStore govMemberDataStore = govMemberService.getGovMemberDataStore();
+	    GovMembersListRdt govMemberListView = restTypeConverter.toGovMemberListRdt(govMemberDataStore);
         return govMemberListView;
 	}
 	
     @RequestMapping("/members/{memberId}")
-    public GovMemberRdt getMember(@PathVariable Integer memberId) throws IOException {
-        GovMember govMember = govMemberDAO.getGovMember(memberId);
-        GovMemberRdt govMemberRdt = restTypeConverter.toGovMemberRdt(govMember);
+    public GovMemberRdt getMember(@PathVariable Integer memberId) throws Exception {
+        GovMembersDataStore govMemberDataStore = govMemberService.getGovMemberDataStore();
+        GovMemberRdt govMemberRdt = restTypeConverter.toGovMemberRdt(govMemberDataStore, memberId);
         return govMemberRdt;
     }
 	
