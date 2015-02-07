@@ -3,11 +3,11 @@ package com.transparent.politics.dao.data;
 import java.util.Date;
 import java.util.List;
 
-import com.transparent.politics.services.data.GovMember;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.transparent.politics.services.data.GovMember;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_EMPTY)
@@ -44,7 +44,7 @@ public class OpenKnessetGovMember implements GovMember {
     private String party_url;
     private Integer bills_stats_approved;
     private Boolean is_current;
-//    private List<List<String>> committees;
+    private List<List<String>> committees;
     private Integer bills_stats_first;
     private Integer residence_centrality;
     private String place_of_residence_lon;
@@ -305,13 +305,13 @@ public class OpenKnessetGovMember implements GovMember {
         this.is_current = value;
     }
 
-//    public List<List<String>> getCommittees() {
-//        return this.committees;
-//    }
-//
-//    public void setCommittees(List<List<String>> value) {
-//        this.committees = value;
-//    }
+    public List<List<String>> getCommittees() {
+        return this.committees;
+    }
+
+    public void setCommittees(List<List<String>> value) {
+        this.committees = value;
+    }
 
     public Integer getBills_stats_first() {
         return this.bills_stats_first;
