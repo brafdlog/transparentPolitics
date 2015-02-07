@@ -12,8 +12,4 @@ public interface CacheManager {
     
     <T> void set(String key, T value) throws IOException;
     
-    String getString(String key);
-    
-    void setString(String key, String value);
-    
 }

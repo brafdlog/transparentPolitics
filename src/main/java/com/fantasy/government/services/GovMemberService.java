@@ -7,15 +7,18 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.fantasy.government.dao.GovMemberDAO;
 import com.fantasy.government.dao.cache.CacheManager;
+import com.fantasy.government.dao.cache.InMemoryCacheManager;
 import com.fantasy.government.services.data.GovMember;
 
 @Component
 public class GovMemberService {
 
+    @Qualifier(InMemoryCacheManager.BEAN_QUALIFIER)
     @Autowired
     private CacheManager cacheManager;
     

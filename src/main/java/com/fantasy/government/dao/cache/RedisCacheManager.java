@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.annotation.PreDestroy;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import redis.clients.jedis.Jedis;
@@ -13,9 +14,11 @@ import redis.clients.jedis.JedisPoolConfig;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Qualifier(RedisCacheManager.BEAN_QUALIFIER)
 @Component
 public class RedisCacheManager implements CacheManager {
 
+    public static final String BEAN_QUALIFIER = "redisCacheManager";
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     
     private JedisPool pool = new JedisPool(new JedisPoolConfig(), "localhost");
@@ -44,8 +47,12 @@ public class RedisCacheManager implements CacheManager {
         setString(key, valueJson);
     }
     
-    @Override
-    public String getString(String key) {
+    @PreDestroy
+    public void cleanup() {
+        pool.destroy();
+    }
+    
+    private String getString(String key) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.get(key);
         } catch (Exception e) {
@@ -53,18 +60,12 @@ public class RedisCacheManager implements CacheManager {
         }
     }
 
-    @Override
-    public void setString(String key, String value) {
+    private void setString(String key, String value) {
         try (Jedis jedis = pool.getResource()) {
             jedis.set(key, value);
         } catch (Exception e) {
             // Do nothing. This can happen if redis is not running
         }
-    }
-
-    @PreDestroy
-    public void cleanup() {
-        pool.destroy();
     }
 
 }
