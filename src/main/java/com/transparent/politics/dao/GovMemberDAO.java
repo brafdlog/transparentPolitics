@@ -18,8 +18,6 @@ import com.transparent.politics.services.data.GovMember;
 @Component
 public class GovMemberDAO {
 
-    private static final String MEMBER_CACHE_KEY_PREFIX = "member_";
-    private static final String CURRENT_MEMBERS_CACHE_KEY = "currentMembers";
     private static final Boolean ONLY_CURRENT_MEMBERS = Boolean.TRUE;
     
     @Autowired
