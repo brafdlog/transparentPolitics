@@ -67,14 +67,15 @@ public class GovMemberService {
         
         for (GovMember govMember : weeklyPresenceGradeMap.keySet()) {
             memberIdToMember.put(govMember.getId(), govMember);
-            Integer weeklyPresenceGrade = weeklyPresenceGradeMap.get(govMember);
+            // the weekly presence is sometimes null so we don't want to calculate it in that case
+            Integer weeklyPresenceGrade = govMember.getAverageWeeklyPresenceHours() == null ? -1 : weeklyPresenceGradeMap.get(govMember);
             Integer monthlyCommitteePresenceGrade = monthlyCommitteePresenceGradeMap.get(govMember);
             Integer billsPreGrade = billsPreGradeMap.get(govMember);
             Integer billsProposedGrade = billsProposedGradeMap.get(govMember);
             Integer billsApprovedGrade = billsApprovedGradeMap.get(govMember);
             
-            Integer memberOverallGrade = getMemberGrade(govMember, weeklyPresenceGrade, monthlyCommitteePresenceGrade, billsPreGrade, billsProposedGrade, billsApprovedGrade);
-            memberIdToGrade.put(govMember.getId(), memberOverallGrade);
+            double memberOverallGrade = getMemberGrade(govMember, weeklyPresenceGrade, monthlyCommitteePresenceGrade, billsPreGrade, billsProposedGrade, billsApprovedGrade);
+            memberIdToGrade.put(govMember.getId(), (int) memberOverallGrade);
         }
         
         GovMembersDataStore govMemberDataStore = new GovMembersDataStore(memberIdToMember, memberIdToGrade);
@@ -86,16 +87,27 @@ public class GovMemberService {
         System.out.println("Recalculating grades: finished. Took " + durationInSeconds + " seconds.");
     }
 
-    private Integer getMemberGrade(GovMember member, int memberWeeklyPresenceGrade, int monthlyCommitteePresenceGrade, int billsPreGrade, int billsProposedGrade, int billsApprovedGrade) throws IOException {
-    	int gradeSum = 0;
-    	
-    	// TODO num factors should take into account grades we don't have (should have -1)
-    	int numFactors = 5;
-    	
-    	gradeSum = memberWeeklyPresenceGrade + monthlyCommitteePresenceGrade + billsPreGrade + billsProposedGrade + billsApprovedGrade;
+    private double getMemberGrade(GovMember member, int memberWeeklyPresenceGrade, int monthlyCommitteePresenceGrade, int billsPreGrade, int billsProposedGrade, int billsApprovedGrade) throws IOException {
+    	double overallGrade = getAverage(memberWeeklyPresenceGrade, monthlyCommitteePresenceGrade, billsPreGrade, billsProposedGrade, billsApprovedGrade);
         
-        // The presence grade is between 0 and 119. We want to get a grade in the range [0,100]
-        return (int) ((gradeSum)/(1.2)/numFactors);
+        // The grade is between 0 and 119. We want to get a grade in the range [0,100]
+        return overallGrade/1.2;
+    }
+    
+    private double getAverage(int... partialGrades) {
+        int numValidFactors = 0;
+        int sum = 0;
+        for (int partialGrade : partialGrades) {
+            if (partialGrade >= 0) {
+                sum += partialGrade;
+                numValidFactors++;
+            }
+        }
+        
+        if (numValidFactors == 0) {
+            return -1;
+        }
+        return (double) sum / numValidFactors; 
     }
     
     private Map<GovMember, Integer> getBillsPreGradeMap(List<GovMember> allGovMembers) throws IOException {
