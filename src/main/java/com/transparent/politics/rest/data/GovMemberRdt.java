@@ -10,6 +10,7 @@ public class GovMemberRdt {
     private String name;
     private String imageUrl;
     private Integer grade;
+    private Float averageWeeklyPresenceHours;
     private GovPartyRdt party;
 
     public Integer getId() {
@@ -52,4 +53,12 @@ public class GovMemberRdt {
         this.party = party;
     }
 
+    public Float getAverageWeeklyPresenceHours() {
+        return averageWeeklyPresenceHours;
+    }
+
+    public void setAverageWeeklyPresenceHours(Float averageWeeklyPresenceHours) {
+        this.averageWeeklyPresenceHours = averageWeeklyPresenceHours;
+    }
+    
 }

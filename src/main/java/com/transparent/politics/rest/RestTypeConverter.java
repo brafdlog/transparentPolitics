@@ -40,6 +40,7 @@ public class RestTypeConverter {
         govMemberRdt.setImageUrl(govMember.getImageUrl());
         govMemberRdt.setName(govMember.getName());
         govMemberRdt.setGrade(memberGrade);
+        govMemberRdt.setAverageWeeklyPresenceHours(govMember.getAverage_weekly_presence_hours());
         return govMemberRdt;
     }
     
