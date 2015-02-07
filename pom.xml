@@ -23,6 +23,7 @@
 		<jackson.databind-version>2.2.3</jackson.databind-version>
 		<guava.version>18.0</guava.version>
 		<jedis.version>2.6.2</jedis.version>
+		<jedisLock.version>1.0.0</jedisLock.version>
     </properties>
   
 	<repositories>
@@ -84,6 +85,13 @@
 			<version>${jedis.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+		    <groupId>com.github.jedis-lock</groupId>
+		    <artifactId>jedis-lock</artifactId>
+		    <version>${jedisLock.version}</version>
+		    <type>jar</type>
+		    <scope>compile</scope>
 		</dependency>
         
 	</dependencies>

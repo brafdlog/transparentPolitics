@@ -12,4 +12,8 @@ public interface CacheManager {
     
     <T> void set(String key, T value) throws IOException;
     
+    void lockCache() throws InterruptedException;
+    
+    void unlockCache();
+    
 }

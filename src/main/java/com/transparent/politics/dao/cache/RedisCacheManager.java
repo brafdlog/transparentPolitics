@@ -13,6 +13,7 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jedis.lock.JedisLock;
 
 @Qualifier(RedisCacheManager.BEAN_QUALIFIER)
 @Component
@@ -22,6 +23,7 @@ public class RedisCacheManager implements CacheManager {
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     
     private JedisPool pool = new JedisPool(new JedisPoolConfig(), "localhost");
+    private JedisLock lock = new JedisLock(new Jedis("localhost"), "lockname", 60000, 60000);
     
     @Override
     public <T> T get(String key, Class<T> clazz) throws IOException {
@@ -45,6 +47,16 @@ public class RedisCacheManager implements CacheManager {
     public <T> void set(String key, T value) throws IOException {
         String valueJson = OBJECT_MAPPER.writeValueAsString(value);
         setString(key, valueJson);
+    }
+    
+    @Override
+    public void lockCache() throws InterruptedException {
+        lock.acquire();
+    }
+
+    @Override
+    public void unlockCache() {
+        lock.release();
     }
     
     @PreDestroy
