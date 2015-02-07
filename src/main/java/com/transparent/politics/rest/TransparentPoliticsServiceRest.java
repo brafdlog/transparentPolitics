@@ -1,6 +1,7 @@
 package com.transparent.politics.rest;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,9 @@ public class TransparentPoliticsServiceRest {
 	@RequestMapping("/members")
 	public GovMembersListRdt getMembers() throws Exception {
 	    GovMembersDataStore govMemberDataStore = govMemberService.getGovMemberDataStore();
-	    GovMembersListRdt govMemberListView = restTypeConverter.toGovMemberListRdt(govMemberDataStore);
-        return govMemberListView;
+	    GovMembersListRdt govMemberListRdt = restTypeConverter.toGovMemberListRdt(govMemberDataStore);
+	    Collections.sort(govMemberListRdt.getMembers());
+        return govMemberListRdt;
 	}
 	
     @RequestMapping("/members/{memberId}")

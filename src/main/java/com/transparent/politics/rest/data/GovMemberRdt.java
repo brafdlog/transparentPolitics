@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_EMPTY)
-public class GovMemberRdt {
+public class GovMemberRdt implements Comparable<GovMemberRdt> {
 
     private Integer id;
     private String name;
@@ -95,6 +95,11 @@ public class GovMemberRdt {
 
     public void setApprovedBills(Integer approvedBills) {
         this.approvedBills = approvedBills;
+    }
+
+    @Override
+    public int compareTo(GovMemberRdt other) {
+        return grade.compareTo(other.grade);
     }
     
 }
