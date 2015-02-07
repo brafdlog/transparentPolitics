@@ -3,7 +3,6 @@ package com.transparent.politics.services;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,15 +56,24 @@ public class GovMemberService {
         
         List<GovMember> allGovMembers = govMemberDAO.getAllGovMemebersDetailed();
         
-        Map<GovMember, Integer> memberToWeeklyPresenceGradeMap = getMemberToWeeklyPresenceGradeMap(allGovMembers);
+        Map<GovMember, Integer> weeklyPresenceGradeMap = getWeeklyPresenceGradeMap(allGovMembers);
+        Map<GovMember, Integer> monthlyCommitteePresenceGradeMap = getMonthlyCommitteePresenceGradeMap(allGovMembers);
+        Map<GovMember, Integer> billsPreGradeMap = getBillsPreGradeMap(allGovMembers);
+        Map<GovMember, Integer> billsProposedGradeMap = getBillsProposedGradeMap(allGovMembers);
+        Map<GovMember, Integer> billsApprovedGradeMap = getBillsApprovedGradeMap(allGovMembers);
         
         Map<Integer, GovMember> memberIdToMember = new HashMap<>(allGovMembers.size());
         Map<Integer, Integer> memberIdToGrade = new HashMap<>(allGovMembers.size());
         
-        for (GovMember govMember : memberToWeeklyPresenceGradeMap.keySet()) {
+        for (GovMember govMember : weeklyPresenceGradeMap.keySet()) {
             memberIdToMember.put(govMember.getId(), govMember);
-            Integer weeklyPresenceGrade = memberToWeeklyPresenceGradeMap.get(govMember);
-            Integer memberOverallGrade = getMemberGrade(govMember, weeklyPresenceGrade);
+            Integer weeklyPresenceGrade = weeklyPresenceGradeMap.get(govMember);
+            Integer monthlyCommitteePresenceGrade = monthlyCommitteePresenceGradeMap.get(govMember);
+            Integer billsPreGrade = billsPreGradeMap.get(govMember);
+            Integer billsProposedGrade = billsProposedGradeMap.get(govMember);
+            Integer billsApprovedGrade = billsApprovedGradeMap.get(govMember);
+            
+            Integer memberOverallGrade = getMemberGrade(govMember, weeklyPresenceGrade, monthlyCommitteePresenceGrade, billsPreGrade, billsProposedGrade, billsApprovedGrade);
             memberIdToGrade.put(govMember.getId(), memberOverallGrade);
         }
         
@@ -78,33 +86,61 @@ public class GovMemberService {
         System.out.println("Recalculating grades: finished. Took " + durationInSeconds + " seconds.");
     }
 
-    private Integer getMemberGrade(GovMember member, int memberWeeklyPresenceGrade) throws IOException {
-    	// The presence grade is between 0 and 119. We want to get a grade in the range [0,100]
-        return (int) ((memberWeeklyPresenceGrade+1)/(1.2));
+    private Integer getMemberGrade(GovMember member, int memberWeeklyPresenceGrade, int monthlyCommitteePresenceGrade, int billsPreGrade, int billsProposedGrade, int billsApprovedGrade) throws IOException {
+    	int gradeSum = 0;
+    	
+    	// TODO num factors should take into account grades we don't have (should have -1)
+    	int numFactors = 5;
+    	
+    	gradeSum = memberWeeklyPresenceGrade + monthlyCommitteePresenceGrade + billsPreGrade + billsProposedGrade + billsApprovedGrade;
+        
+        // The presence grade is between 0 and 119. We want to get a grade in the range [0,100]
+        return (int) ((gradeSum)/(1.2)/numFactors);
     }
     
-    private Map<GovMember, Integer> getMemberToWeeklyPresenceGradeMap(List<GovMember> allGovMembers) throws IOException {
-    	List<GovMember> weeklyPresenceHoursList = new ArrayList<>(allGovMembers);
-    	Collections.sort(weeklyPresenceHoursList, new Comparator<GovMember>() {
+    private Map<GovMember, Integer> getBillsPreGradeMap(List<GovMember> allGovMembers) throws IOException {
+        List<GovMember> billsPreList = new ArrayList<>(allGovMembers);
+        Collections.sort(billsPreList, new GovMemberComparators.BillsPreGovMemberComparator());
+        
+        Map<GovMember, Integer> memberToBillsPreGradeMap = convertListToMapFromElementToIndex(billsPreList);
+        
+        return memberToBillsPreGradeMap;
+    }
 
-			@Override
-			public int compare(GovMember o1, GovMember o2) {
-				if (o1.getAverageWeeklyPresenceHours() == null && o2.getAverageWeeklyPresenceHours() == null) {
-					return 0;
-				}
-				if (o1.getAverageWeeklyPresenceHours() == null) {
-					return -1;
-				}
-				if (o2.getAverageWeeklyPresenceHours() == null) {
-					return 1;
-				}
-				return o1.getAverageWeeklyPresenceHours().compareTo(o2.getAverageWeeklyPresenceHours());
-			}
-		});
+    private Map<GovMember, Integer> getBillsProposedGradeMap(List<GovMember> allGovMembers) throws IOException {
+        List<GovMember> billsProposedList = new ArrayList<>(allGovMembers);
+        Collections.sort(billsProposedList, new GovMemberComparators.BillsProposedGovMemberComparator());
+        
+        Map<GovMember, Integer> memberToBillsProposedGradeMap = convertListToMapFromElementToIndex(billsProposedList);
+        
+        return memberToBillsProposedGradeMap;
+    }
+    
+    private Map<GovMember, Integer> getBillsApprovedGradeMap(List<GovMember> allGovMembers) throws IOException {
+        List<GovMember> billsApprovedList = new ArrayList<>(allGovMembers);
+        Collections.sort(billsApprovedList, new GovMemberComparators.BillsApprovedGovMemberComparator());
+        
+        Map<GovMember, Integer> memberToBillsApprovedGradeMap = convertListToMapFromElementToIndex(billsApprovedList);
+        
+        return memberToBillsApprovedGradeMap;
+    }
+    
+    private Map<GovMember, Integer> getWeeklyPresenceGradeMap(List<GovMember> allGovMembers) throws IOException {
+    	List<GovMember> weeklyPresenceHoursList = new ArrayList<>(allGovMembers);
+    	Collections.sort(weeklyPresenceHoursList, new GovMemberComparators.WeeklyPresenceGovMemberComparator());
     	
     	Map<GovMember, Integer> memberToWeeklyPresenceGradeMap = convertListToMapFromElementToIndex(weeklyPresenceHoursList);
     	
     	return memberToWeeklyPresenceGradeMap;
+    }
+    
+    private Map<GovMember, Integer> getMonthlyCommitteePresenceGradeMap(List<GovMember> allGovMembers) throws IOException {
+        List<GovMember> monthlyCommitteePresenceList = new ArrayList<>(allGovMembers);
+        Collections.sort(monthlyCommitteePresenceList, new GovMemberComparators.MonthlyCommitteePresenceGovMemberComparator());
+        
+        Map<GovMember, Integer> memberMonthlyCommitteePresenceGradeMap = convertListToMapFromElementToIndex(monthlyCommitteePresenceList);
+        
+        return memberMonthlyCommitteePresenceGradeMap;
     }
     
     private <T> Map<T, Integer> convertListToMapFromElementToIndex(List<T> elementsList) {
