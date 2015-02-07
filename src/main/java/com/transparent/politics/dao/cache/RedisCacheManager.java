@@ -50,8 +50,12 @@ public class RedisCacheManager implements CacheManager {
     }
     
     @Override
-    public void lockCache() throws InterruptedException {
-        lock.acquire();
+    public void lockCache() {
+        try {
+            lock.acquire();
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Failed locking redis cache", e);
+        }
     }
 
     @Override
