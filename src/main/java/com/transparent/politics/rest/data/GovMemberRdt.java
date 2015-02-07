@@ -11,6 +11,10 @@ public class GovMemberRdt {
     private String imageUrl;
     private Integer grade;
     private Float averageWeeklyPresenceHours;
+    private Float averageMonthlyCommitteePresence;
+    private Integer tromitBills;
+    private Integer proposedBills;
+    private Integer approvedBills;
     private GovPartyRdt party;
 
     public Integer getId() {
@@ -59,6 +63,38 @@ public class GovMemberRdt {
 
     public void setAverageWeeklyPresenceHours(Float averageWeeklyPresenceHours) {
         this.averageWeeklyPresenceHours = averageWeeklyPresenceHours;
+    }
+
+    public Float getAverageMonthlyCommitteePresence() {
+        return averageMonthlyCommitteePresence;
+    }
+
+    public void setAverageMonthlyCommitteePresence(Float averageMonthlyCommitteePresence) {
+        this.averageMonthlyCommitteePresence = averageMonthlyCommitteePresence;
+    }
+
+    public Integer getTromitBills() {
+        return tromitBills;
+    }
+
+    public void setTromitBills(Integer tromitBills) {
+        this.tromitBills = tromitBills;
+    }
+
+    public Integer getProposedBills() {
+        return proposedBills;
+    }
+
+    public void setProposedBills(Integer proposedBills) {
+        this.proposedBills = proposedBills;
+    }
+
+    public Integer getApprovedBills() {
+        return approvedBills;
+    }
+
+    public void setApprovedBills(Integer approvedBills) {
+        this.approvedBills = approvedBills;
     }
     
 }

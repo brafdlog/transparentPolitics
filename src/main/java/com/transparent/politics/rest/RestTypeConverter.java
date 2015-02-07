@@ -42,6 +42,10 @@ public class RestTypeConverter {
         govMemberRdt.setImageUrl(govMember.getImageUrl());
         govMemberRdt.setName(govMember.getName());
         govMemberRdt.setAverageWeeklyPresenceHours(govMember.getAverageWeeklyPresenceHours());
+        govMemberRdt.setAverageMonthlyCommitteePresence(govMember.getAverageMonthlyCommitteePresence());
+        govMemberRdt.setTromitBills(govMember.getTromitBills());
+        govMemberRdt.setProposedBills(govMember.getProposedBills());
+        govMemberRdt.setApprovedBills(govMember.getApprovedBills());
         govMemberRdt.setGrade(govMemberGrade);
         return govMemberRdt;
     }

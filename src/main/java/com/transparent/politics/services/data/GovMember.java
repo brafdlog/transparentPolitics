@@ -14,12 +14,12 @@ public interface GovMember {
 
 	Float getAverageWeeklyPresenceHours();
 
-	Integer getBillsStatsProposed();
-
 	Float getAverageMonthlyCommitteePresence();
 
-	Integer getBillsStatsApproved();
+	Integer getTromitBills();
 
-	Integer getBillsStatsPre();
+	Integer getProposedBills();
+
+	Integer getApprovedBills();
 
 }

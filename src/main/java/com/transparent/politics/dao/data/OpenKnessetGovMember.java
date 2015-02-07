@@ -228,7 +228,7 @@ public class OpenKnessetGovMember implements GovMember {
     
     @JsonIgnore
     @Override
-    public Integer getBillsStatsProposed() {
+    public Integer getProposedBills() {
         return getBills_stats_proposed();
     }
 
@@ -304,7 +304,7 @@ public class OpenKnessetGovMember implements GovMember {
 
     @JsonIgnore
     @Override
-    public Integer getBillsStatsApproved() {
+    public Integer getApprovedBills() {
         return getBills_stats_approved();
     }
     
@@ -417,7 +417,7 @@ public class OpenKnessetGovMember implements GovMember {
     
     @JsonIgnore
     @Override
-    public Integer getBillsStatsPre() {
+    public Integer getTromitBills() {
         return getBills_stats_pre();
     }
 

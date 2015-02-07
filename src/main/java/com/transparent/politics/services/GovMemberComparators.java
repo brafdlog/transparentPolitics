@@ -41,48 +41,48 @@ public class GovMemberComparators {
     public static final class BillsPreGovMemberComparator implements Comparator<GovMember> {
         @Override
         public int compare(GovMember o1, GovMember o2) {
-            if (o1.getBillsStatsPre() == null && o2.getBillsStatsPre() == null) {
+            if (o1.getTromitBills() == null && o2.getTromitBills() == null) {
                 return 0;
             }
-            if (o1.getBillsStatsPre() == null) {
+            if (o1.getTromitBills() == null) {
                 return -1;
             }
-            if (o2.getBillsStatsPre() == null) {
+            if (o2.getTromitBills() == null) {
                 return 1;
             }
-            return o1.getBillsStatsPre().compareTo(o2.getBillsStatsPre());
+            return o1.getTromitBills().compareTo(o2.getTromitBills());
         }
     }
 
     public static final class BillsProposedGovMemberComparator implements Comparator<GovMember> {
         @Override
         public int compare(GovMember o1, GovMember o2) {
-            if (o1.getBillsStatsProposed() == null && o2.getBillsStatsProposed() == null) {
+            if (o1.getProposedBills() == null && o2.getProposedBills() == null) {
                 return 0;
             }
-            if (o1.getBillsStatsProposed() == null) {
+            if (o1.getProposedBills() == null) {
                 return -1;
             }
-            if (o2.getBillsStatsProposed() == null) {
+            if (o2.getProposedBills() == null) {
                 return 1;
             }
-            return o1.getBillsStatsProposed().compareTo(o2.getBillsStatsProposed());
+            return o1.getProposedBills().compareTo(o2.getProposedBills());
         }
     }
     
     public static final class BillsApprovedGovMemberComparator implements Comparator<GovMember> {
         @Override
         public int compare(GovMember o1, GovMember o2) {
-            if (o1.getBillsStatsApproved() == null && o2.getBillsStatsApproved() == null) {
+            if (o1.getApprovedBills() == null && o2.getApprovedBills() == null) {
                 return 0;
             }
-            if (o1.getBillsStatsApproved() == null) {
+            if (o1.getApprovedBills() == null) {
                 return -1;
             }
-            if (o2.getBillsStatsApproved() == null) {
+            if (o2.getApprovedBills() == null) {
                 return 1;
             }
-            return o1.getBillsStatsApproved().compareTo(o2.getBillsStatsApproved());
+            return o1.getApprovedBills().compareTo(o2.getApprovedBills());
         }
     }
     
