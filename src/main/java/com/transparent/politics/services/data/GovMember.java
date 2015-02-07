@@ -12,14 +12,14 @@ public interface GovMember {
 
     String getImageUrl();
 
-	Float getAverage_weekly_presence_hours();
+	Float getAverageWeeklyPresenceHours();
 
-	Integer getBills_stats_proposed();
+	Integer getBillsStatsProposed();
 
-	Float getAverage_monthly_committee_presence();
+	Float getAverageMonthlyCommitteePresence();
 
-	Integer getBills_stats_approved();
+	Integer getBillsStatsApproved();
 
-	Integer getBills_stats_pre();
+	Integer getBillsStatsPre();
 
 }

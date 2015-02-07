@@ -3,6 +3,7 @@ package com.transparent.politics.dao.data;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -162,8 +163,13 @@ public class OpenKnessetGovMember implements GovMember {
     public void setMmms_count(Integer value) {
         this.mmms_count = value;
     }
-
+    
+    @JsonIgnore
     @Override
+    public Float getAverageWeeklyPresenceHours() {
+        return getAverage_weekly_presence_hours();
+    }
+
     public Float getAverage_weekly_presence_hours() {
         return this.average_weekly_presence_hours;
     }
@@ -219,8 +225,13 @@ public class OpenKnessetGovMember implements GovMember {
     public void setAverage_weekly_presence_rank(Integer value) {
         this.average_weekly_presence_rank = value;
     }
-
+    
+    @JsonIgnore
     @Override
+    public Integer getBillsStatsProposed() {
+        return getBills_stats_proposed();
+    }
+
     public Integer getBills_stats_proposed() {
         return this.bills_stats_proposed;
     }
@@ -252,8 +263,13 @@ public class OpenKnessetGovMember implements GovMember {
     public void setVotes_count(Integer value) {
         this.votes_count = value;
     }
-
+    
+    @JsonIgnore
     @Override
+    public Float getAverageMonthlyCommitteePresence() {
+        return getAverage_monthly_committee_presence();
+    }
+
     public Float getAverage_monthly_committee_presence() {
         return this.average_monthly_committee_presence;
     }
@@ -286,7 +302,12 @@ public class OpenKnessetGovMember implements GovMember {
         this.party_url = value;
     }
 
+    @JsonIgnore
     @Override
+    public Integer getBillsStatsApproved() {
+        return getBills_stats_approved();
+    }
+    
     public Integer getBills_stats_approved() {
         return this.bills_stats_approved;
     }
@@ -393,8 +414,13 @@ public class OpenKnessetGovMember implements GovMember {
     public void setId(Integer value) {
         this.id = value;
     }
-
+    
+    @JsonIgnore
     @Override
+    public Integer getBillsStatsPre() {
+        return getBills_stats_pre();
+    }
+
     public Integer getBills_stats_pre() {
         return this.bills_stats_pre;
     }

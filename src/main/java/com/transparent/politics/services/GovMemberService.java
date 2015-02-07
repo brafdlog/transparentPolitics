@@ -94,16 +94,16 @@ public class GovMemberService {
 
 			@Override
 			public int compare(GovMember o1, GovMember o2) {
-				if (o1.getAverage_weekly_presence_hours() == null && o2.getAverage_weekly_presence_hours() == null) {
+				if (o1.getAverageWeeklyPresenceHours() == null && o2.getAverageWeeklyPresenceHours() == null) {
 					return 0;
 				}
-				if (o1.getAverage_weekly_presence_hours() == null) {
+				if (o1.getAverageWeeklyPresenceHours() == null) {
 					return -1;
 				}
-				if (o2.getAverage_weekly_presence_hours() == null) {
+				if (o2.getAverageWeeklyPresenceHours() == null) {
 					return 1;
 				}
-				return o1.getAverage_weekly_presence_hours().compareTo(o2.getAverage_weekly_presence_hours());
+				return o1.getAverageWeeklyPresenceHours().compareTo(o2.getAverageWeeklyPresenceHours());
 			}
 		});
     	
