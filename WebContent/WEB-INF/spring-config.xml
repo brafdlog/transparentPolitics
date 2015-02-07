@@ -9,6 +9,6 @@
         http://www.springframework.org/schema/context/spring-context-4.0.xsd">
    
       <!-- This tells Spring context where to look for bean classes with appropriate annotations -->
-      <context:component-scan base-package="com.fantasy.government"></context:component-scan>
+      <context:component-scan base-package="com.transparent.politics"></context:component-scan>
 
 </beans>
