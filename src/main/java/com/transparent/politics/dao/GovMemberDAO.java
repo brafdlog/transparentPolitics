@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import com.transparent.politics.common.Config;
 import com.transparent.politics.common.Utils;
 import com.transparent.politics.dao.cache.CacheManager;
-import com.transparent.politics.dao.cache.InMemoryCacheManager;
 import com.transparent.politics.dao.data.OpenKnessetGovMember;
 import com.transparent.politics.dao.openknesset.OpenKnessetProxy;
 import com.transparent.politics.services.data.GovMember;
@@ -23,7 +23,7 @@ public class GovMemberDAO {
     @Autowired
     private OpenKnessetProxy openKnessetApi;
     
-    @Qualifier(InMemoryCacheManager.BEAN_QUALIFIER)
+    @Qualifier(Config.CACHE_PROVIDER_BEAN_QUALIFIER)
     @Autowired
     private CacheManager cacheManager;
     
@@ -46,7 +46,7 @@ public class GovMemberDAO {
             } catch (Exception e) {
                 System.out.println("Exception while getting member. Probably too many requests. Sleeping and trying again");
                 member = null;
-                // Need to wait here because exception may be because of too many requests
+                // Waiting here in case exception is because of too many requests
                 Utils.sleep(2000);
             }
         }

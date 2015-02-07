@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.transparent.politics.common.Config;
 import com.transparent.politics.dao.cache.CacheManager;
-import com.transparent.politics.dao.cache.InMemoryCacheManager;
 import com.transparent.politics.dao.data.OpenKnessetGovParty;
 import com.transparent.politics.dao.openknesset.OpenKnessetProxy;
 import com.transparent.politics.services.data.GovParty;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 @Component
 public class GovPartyDAO {
@@ -23,7 +23,7 @@ public class GovPartyDAO {
     @Autowired
     private OpenKnessetProxy openKnessetApi;
     
-    @Qualifier(InMemoryCacheManager.BEAN_QUALIFIER)
+    @Qualifier(Config.CACHE_PROVIDER_BEAN_QUALIFIER)
     @Autowired
     private CacheManager cacheManager;
     

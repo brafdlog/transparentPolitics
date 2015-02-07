@@ -14,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import com.transparent.politics.common.Config;
 import com.transparent.politics.dao.GovMemberDAO;
 import com.transparent.politics.dao.cache.CacheManager;
-import com.transparent.politics.dao.cache.InMemoryCacheManager;
 import com.transparent.politics.services.data.GovMember;
 import com.transparent.politics.services.data.GovMembersDataStore;
 
@@ -27,7 +27,7 @@ public class GovMemberService {
 
     private static final int MAX_SECONDS_TO_WAIT = 60;
 
-    @Qualifier(InMemoryCacheManager.BEAN_QUALIFIER)
+    @Qualifier(Config.CACHE_PROVIDER_BEAN_QUALIFIER)
     @Autowired
     private CacheManager cacheManager;
     
