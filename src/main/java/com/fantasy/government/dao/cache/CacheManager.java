@@ -1,4 +1,4 @@
-package com.fantasy.government.dao;
+package com.fantasy.government.dao.cache;
 
 import java.io.IOException;
 
