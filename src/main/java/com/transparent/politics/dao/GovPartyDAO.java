@@ -60,4 +60,15 @@ public class GovPartyDAO {
         
         return party;
     }
+    
+    public GovParty getPartyByName(String partyName) throws IOException {
+        List<? extends GovParty> allParties = getAllParties();
+        
+        for (GovParty party : allParties) {
+            if (party.getName().equals(partyName)) {
+                return party;
+            }
+        }
+        return null;
+    }
 }

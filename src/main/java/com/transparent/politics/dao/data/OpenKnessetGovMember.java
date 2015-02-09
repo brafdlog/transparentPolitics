@@ -193,6 +193,11 @@ public class OpenKnessetGovMember implements GovMember {
     public void setResidence_economy(Integer value) {
         this.residence_economy = value;
     }
+    
+    @Override
+    public String getPartyName() {
+        return getParty_name();
+    }
 
     public String getParty_name() {
         return this.party_name;
@@ -708,5 +713,5 @@ public class OpenKnessetGovMember implements GovMember {
             return false;
         return true;
     }
-    
+
 }

@@ -15,9 +15,11 @@ import org.springframework.stereotype.Component;
 
 import com.transparent.politics.common.Config;
 import com.transparent.politics.dao.GovMemberDAO;
+import com.transparent.politics.dao.GovPartyDAO;
 import com.transparent.politics.dao.cache.CacheManager;
 import com.transparent.politics.services.data.GovMember;
 import com.transparent.politics.services.data.GovMembersDataStore;
+import com.transparent.politics.services.data.GovParty;
 
 @Component
 public class GovMemberService {
@@ -32,6 +34,9 @@ public class GovMemberService {
     
     @Autowired
     private GovMemberDAO govMemberDAO;
+    
+    @Autowired
+    private GovPartyDAO govPartyDAO;
     
     private AtomicBoolean isCalculating = new AtomicBoolean(false);
     
@@ -78,7 +83,10 @@ public class GovMemberService {
             memberIdToGrade.put(govMember.getId(), (int) memberOverallGrade);
         }
         
-        GovMembersDataStore govMemberDataStore = new GovMembersDataStore(memberIdToMember, memberIdToGrade);
+        List<? extends GovParty> allParties = govPartyDAO.getAllParties();
+        Map<String, GovParty> partyNameToPartyMap = buildPartyNameToPartyMap(allParties);
+        
+        GovMembersDataStore govMemberDataStore = new GovMembersDataStore(memberIdToMember, memberIdToGrade, partyNameToPartyMap);
         cacheManager.set(GOV_MEMBER_DATA_STORE_CACHE_KEY, govMemberDataStore);
         
         isCalculating.set(false);
@@ -176,6 +184,16 @@ public class GovMemberService {
         if (secondsWaited > maxSecondsToWait) {
             throw new RuntimeException("Timeout waiting for recalculation");
         }
+    }
+    
+    private Map<String, GovParty> buildPartyNameToPartyMap(List<? extends GovParty> allParties) {
+        Map<String, GovParty> partyNameToPartyMap = new HashMap<>(allParties.size());
+        
+        for (GovParty party : allParties) {
+            partyNameToPartyMap.put(party.getName(), party);
+        }
+        
+        return partyNameToPartyMap;
     }
     
 }

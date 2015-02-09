@@ -21,5 +21,7 @@ public interface GovMember {
 	Integer getProposedBills();
 
 	Integer getApprovedBills();
+	
+	String getPartyName();
 
 }
