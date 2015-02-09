@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.transparent.politics.common.Config;
+import com.transparent.politics.common.Utils;
 import com.transparent.politics.dao.cache.CacheManager;
 import com.transparent.politics.dao.data.OpenKnessetGovParty;
 import com.transparent.politics.dao.openknesset.OpenKnessetProxy;
@@ -30,7 +31,20 @@ public class GovPartyDAO {
     public List<? extends GovParty> getAllParties() throws IOException {
         List<OpenKnessetGovParty> allParties = cacheManager.get(ALL_PARTIES_CACHE_KEY, new TypeReference<List<OpenKnessetGovParty>>() {});
         if (allParties == null) {
-            allParties = openKnessetApi.getAllParties().getObjects();
+            int maxNumTries = 5;
+            int numTries = 0;
+            
+            while (allParties == null && numTries <= maxNumTries) {
+                numTries++;
+                try {
+                    allParties = openKnessetApi.getAllParties().getObjects();
+                } catch (Exception e) {
+                    System.out.println("An error occured getting all parties. Retrying. Error message: " + e.getMessage());
+                    allParties = null;
+                    Utils.sleep(300);
+                }
+            }
+            
             cacheManager.set(ALL_PARTIES_CACHE_KEY, allParties);
         }
         return allParties;
