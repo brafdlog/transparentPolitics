@@ -10,4 +10,4 @@ Currently implemented:
 
 /parties/{party id}
 
-Redis caching is implemented. To use just install and run redis on local machine
+Redis caching and in memory caching is implemented
