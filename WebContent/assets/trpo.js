@@ -1,3 +1,13 @@
+define("trpo/adapters/application", 
+  ["ember-data","exports"],
+  function(__dependency1__, __exports__) {
+    "use strict";
+    var DS = __dependency1__["default"];
+
+    __exports__["default"] = DS.RESTAdapter.extend({
+    	namespace: 'rest'
+    });
+  });
 define("trpo/app", 
   ["ember","ember/resolver","ember/load-initializers","trpo/config/environment","exports"],
   function(__dependency1__, __dependency2__, __dependency3__, __dependency4__, __exports__) {
@@ -383,7 +393,7 @@ define("trpo/templates/components/member-component",
       data.buffer.push(escapeExpression((helper = helpers.bindAttr || (depth0 && depth0.bindAttr),options={hash:{
         'style': ("inlineStyle")
       },hashTypes:{'style': "ID"},hashContexts:{'style': depth0},contexts:[],types:[],data:data},helper ? helper.call(depth0, options) : helperMissing.call(depth0, "bindAttr", options))));
-      data.buffer.push(">\n			<div class=\"name\">\n				<img src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Likud_Logo.svg/250px-Likud_Logo.svg.png\">\n				<span class=\"badge\">");
+      data.buffer.push(">\n			<img src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Likud_Logo.svg/250px-Likud_Logo.svg.png\">\n			<div class=\"name\">\n				<span class=\"badge\">");
       data.buffer.push(escapeExpression((helper = helpers['number-incrementor'] || (depth0 && depth0['number-incrementor']),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "index", options) : helperMissing.call(depth0, "number-incrementor", "index", options))));
       data.buffer.push("</span> ");
       stack1 = helpers._triageMustache.call(depth0, "data.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
@@ -549,6 +559,15 @@ define("trpo/templates/parties",
       data.buffer.push("\n");
       return buffer;
       
+    });
+  });
+define("trpo/tests/adapters/application.jshint", 
+  [],
+  function() {
+    "use strict";
+    module('JSHint - adapters');
+    test('adapters/application.js should pass jshint', function() { 
+      ok(true, 'adapters/application.js should pass jshint.'); 
     });
   });
 define("trpo/tests/app.jshint", 
@@ -732,6 +751,15 @@ define("trpo/tests/trpo/tests/test-helper.jshint",
       ok(true, 'trpo/tests/test-helper.js should pass jshint.'); 
     });
   });
+define("trpo/tests/trpo/tests/unit/adapters/application-test.jshint", 
+  [],
+  function() {
+    "use strict";
+    module('JSHint - trpo/tests/unit/adapters');
+    test('trpo/tests/unit/adapters/application-test.js should pass jshint', function() { 
+      ok(true, 'trpo/tests/unit/adapters/application-test.js should pass jshint.'); 
+    });
+  });
 define("trpo/tests/trpo/tests/unit/components/grade-component-test.jshint", 
   [],
   function() {
@@ -820,6 +848,24 @@ define("trpo/tests/trpo/tests/unit/routes/parties-test.jshint",
     module('JSHint - trpo/tests/unit/routes');
     test('trpo/tests/unit/routes/parties-test.js should pass jshint', function() { 
       ok(true, 'trpo/tests/unit/routes/parties-test.js should pass jshint.'); 
+    });
+  });
+define("trpo/tests/unit/adapters/application-test", 
+  ["ember-qunit"],
+  function(__dependency1__) {
+    "use strict";
+    var moduleFor = __dependency1__.moduleFor;
+    var test = __dependency1__.test;
+
+    moduleFor('adapter:application', 'ApplicationAdapter', {
+      // Specify the other units that are required for this test.
+      // needs: ['serializer:foo']
+    });
+
+    // Replace this with your real tests.
+    test('it exists', function() {
+      var adapter = this.subject();
+      ok(adapter);
     });
   });
 define("trpo/tests/unit/components/grade-component-test", 
