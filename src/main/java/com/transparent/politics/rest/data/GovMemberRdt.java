@@ -15,7 +15,7 @@ public class GovMemberRdt implements Comparable<GovMemberRdt> {
     private Integer tromitBills;
     private Integer proposedBills;
     private Integer approvedBills;
-    private GovPartyRdt party;
+    private Integer partyId;
 
     public Integer getId() {
         return id;
@@ -49,12 +49,12 @@ public class GovMemberRdt implements Comparable<GovMemberRdt> {
         this.grade = grade;
     }
 
-    public GovPartyRdt getParty() {
-        return party;
+    public Integer getPartyId() {
+        return partyId;
     }
 
-    public void setParty(GovPartyRdt party) {
-        this.party = party;
+    public void setPartyId(Integer partyId) {
+        this.partyId = partyId;
     }
 
     public Float getAverageWeeklyPresenceHours() {
