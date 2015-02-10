@@ -393,7 +393,7 @@ define("trpo/templates/components/member-component",
       data.buffer.push(escapeExpression((helper = helpers.bindAttr || (depth0 && depth0.bindAttr),options={hash:{
         'style': ("inlineStyle")
       },hashTypes:{'style': "ID"},hashContexts:{'style': depth0},contexts:[],types:[],data:data},helper ? helper.call(depth0, options) : helperMissing.call(depth0, "bindAttr", options))));
-      data.buffer.push(">\n			<img src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Likud_Logo.svg/250px-Likud_Logo.svg.png\">\n			<div class=\"name\">\n				<span class=\"badge\">");
+      data.buffer.push(">\n			<img class=\"party-logo\" src=\"http://upload.wikimedia.org/wikipedia/he/thumb/8/89/Shas.png/150px-Shas.png\">\n			<div class=\"name\">\n				<span class=\"badge\">");
       data.buffer.push(escapeExpression((helper = helpers['number-incrementor'] || (depth0 && depth0['number-incrementor']),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "index", options) : helperMissing.call(depth0, "number-incrementor", "index", options))));
       data.buffer.push("</span> ");
       stack1 = helpers._triageMustache.call(depth0, "data.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
@@ -401,7 +401,7 @@ define("trpo/templates/components/member-component",
       data.buffer.push("\n				<h3 class=\"grade\">\n					");
       stack1 = helpers._triageMustache.call(depth0, "data.grade", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
       if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("\n				</h3>\n			</div>\n		</div>	\n		<div class=\"back\">\n			<ul class=\"list-unstyled\">\n				<li><a href=\"#\">");
+      data.buffer.push("\n				</h3>\n			</div>\n		</div>	\n		<div class=\"back\">\n			<ul class=\"list-unstyled\">\n				<li><a href=\"#\" onclick=\"event.stopPropagation();\" target=\"_blank\">");
       stack1 = helpers._triageMustache.call(depth0, "data.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
       if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
       data.buffer.push("</a></li>\n				<li>ציון - ");
