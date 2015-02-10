@@ -39,7 +39,7 @@ public class GovMemberDAO {
     public GovMember getGovMember(Integer memberId) throws Exception {
         int numTries = 0;
         OpenKnessetGovMember member = null;
-        while (numTries < 10 && member == null) {
+        while (numTries < 25 && member == null) {
             numTries++;
             try {
                 member = openKnessetApi.getMember(memberId);
@@ -72,7 +72,7 @@ public class GovMemberDAO {
     		memberCounter++;
     		
     		// Need to sleep to prevent too many requsets exception
-    		Utils.sleep(75);
+    		Utils.sleep(100);
     	}
     	return allGovMembers;
     }

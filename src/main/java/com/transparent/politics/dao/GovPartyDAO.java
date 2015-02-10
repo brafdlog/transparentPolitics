@@ -31,7 +31,7 @@ public class GovPartyDAO {
     public List<? extends GovParty> getAllParties() throws IOException {
         List<OpenKnessetGovParty> allParties = cacheManager.get(ALL_PARTIES_CACHE_KEY, new TypeReference<List<OpenKnessetGovParty>>() {});
         if (allParties == null) {
-            int maxNumTries = 5;
+            int maxNumTries = 25;
             int numTries = 0;
             
             while (allParties == null && numTries <= maxNumTries) {
@@ -41,7 +41,7 @@ public class GovPartyDAO {
                 } catch (Exception e) {
                     System.out.println("An error occured getting all parties. Retrying. Error message: " + e.getMessage());
                     allParties = null;
-                    Utils.sleep(300);
+                    Utils.sleep(1500);
                 }
             }
             
