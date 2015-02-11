@@ -49,11 +49,11 @@ public class GovMemberRdt implements Comparable<GovMemberRdt> {
         this.grade = grade;
     }
 
-    public Integer getPartyId() {
+    public Integer getParty() {
         return partyId;
     }
 
-    public void setPartyId(Integer partyId) {
+    public void setParty(Integer partyId) {
         this.partyId = partyId;
     }
 

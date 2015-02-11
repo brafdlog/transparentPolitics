@@ -48,7 +48,7 @@ public class RestTypeConverter {
         govMemberRdt.setApprovedBills(govMember.getApprovedBills());
         govMemberRdt.setGrade(govMemberGrade);
         GovParty party = govMemberDataStore.getPartyByName(govMember.getPartyName());
-        govMemberRdt.setPartyId(party.getId());
+        govMemberRdt.setParty(party.getId());
         return govMemberRdt;
     }
     

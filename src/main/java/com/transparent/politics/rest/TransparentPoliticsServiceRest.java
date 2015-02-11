@@ -2,6 +2,7 @@ package com.transparent.politics.rest;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +53,13 @@ public class TransparentPoliticsServiceRest {
 	    return govPartyListRdt;
 	}
 	
-    @RequestMapping("/parties/{partyId}")
-    public GovPartyRdt getParty(@PathVariable Integer partyId) throws IOException {
+	@SuppressWarnings("serial")
+	@RequestMapping("/parties/{partyId}")
+    public HashMap<String, GovPartyRdt> getParty(@PathVariable Integer partyId) throws IOException {
         GovParty govParty = govPartyDAO.getParty(partyId);
-        GovPartyRdt govPartyRdt = restTypeConverter.toGovPartyRdt(govParty);
-        return govPartyRdt;
+        final GovPartyRdt govPartyRdt = restTypeConverter.toGovPartyRdt(govParty);
+        return new HashMap<String, GovPartyRdt>(){{
+        	put("party", govPartyRdt);
+        }};
     }
 }
