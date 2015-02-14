@@ -112,13 +112,37 @@ define("trpo/components/member-component",
     __exports__["default"] = Ember.Component.extend({
     	classNames: ['member', 'col-xs-6', 'col-md-3', 'col-lg-2'],
     	classNameBindings: ['flipped'],
+    	
     	inlineStyle: function(){
     		return 'background-image: url(' + this.get('data.imageUrl') + ');';
     	}.property('data.imageUrl'),
+    	memberLink: function() {
+    		return 'https://oknesset.org/member/' + this.get('data.id');
+    	}.property('data.id'),
+    	partyLink: function() {
+    		return 'https://oknesset.org/party/' + this.get('data.party.id');
+    	}.property('data.id'),
+    	
     	actions: {
     		toggleMemberState: function() {
     			this.toggleProperty('flipped');
     		}
+    	}
+    });
+  });
+define("trpo/components/party-label", 
+  ["ember","exports"],
+  function(__dependency1__, __exports__) {
+    "use strict";
+    var Ember = __dependency1__["default"];
+
+    __exports__["default"] = Ember.Component.extend({
+    	tagName: 'span',
+    	classNames: ['label', 'party-label', 'label-default'],
+    	classNameBindings: ['label-primary'],
+    	click: function() {
+    		this.toggleProperty('label-primary');
+    		this.sendAction('action', this.get('data'));
     	}
     });
   });
@@ -131,15 +155,35 @@ define("trpo/controllers/members",
     __exports__["default"] = Ember.ArrayController.extend({
     	sortAscending: false,
     	sortProperties: ['grade', 'name'],
+    	activeParties: Ember.A(),
     	searchTerm: '',
-    	filterdMembers: function(){
-    		return this.get('arrangedContent').filter(function(member){
-    			return member.get('name').indexOf(this.searchTerm) > -1;
+    	
+    	filterdMembers: function() {
+    		return this.get('arrangedContent').filter(function(member) {
+    			var activeParties = this.get('activeParties'),
+    				isName = member.get('name').indexOf(this.searchTerm) > -1,
+    				isInPartFilter = activeParties.length === 0 || activeParties.indexOf(member.get('party').get('name')) > -1;
+
+    			return isName && isInPartFilter;
     		}.bind(this));
-    	}.property('searchTerm', 'arrangedContent.[]'),
+    	}.property('searchTerm', 'activeParties.@each', 'arrangedContent.[]'),
+    	parties: function() {
+    		return this.store.find('party');
+    	}.property('this'),
+    	
     	actions: {
-    		toggleMemberState: function(member) {
-    			debugger;
+    		filterParties: function(data) {
+    			var activeParties = this.get('activeParties'),
+    				partyName = data.get('name'),
+    				hasParty = activeParties.contains(partyName);
+    			
+    			if(hasParty) {
+    				activeParties.removeObject(partyName);
+    			} else {
+    				activeParties.pushObject(partyName);
+    			}
+
+    			console.log(activeParties);
     		}
     	}
     });
@@ -193,7 +237,8 @@ define("trpo/models/member",
       averageMonthlyCommitteePresence: DS.attr('number'),
       tromitBills: DS.attr('number'),
       proposedBills: DS.attr('number'),
-      approvedBills: DS.attr('number')
+      approvedBills: DS.attr('number'),
+      party: DS.belongsTo('party', { async: true })
     });
   });
 define("trpo/models/party", 
@@ -250,12 +295,6 @@ define("trpo/routes/members",
     	},
     	setupController: function(controller, model) {
     		this._super(controller, model);
-    		//controller.set('searchTerm', '');
-    	},
-    	actions: {
-    		toggleActive: function(member) {
-    			debugger;
-    		}
     	}
     });
   });
@@ -271,295 +310,1038 @@ define("trpo/routes/parties",
     	}
     });
   });
-define("trpo/templates/application", 
-  ["ember","exports"],
+define("trpo/serializers/member", 
+  ["ember-data","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
-    var Ember = __dependency1__["default"];
-    __exports__["default"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-    this.compilerInfo = [4,'>= 1.0.0'];
-    helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-      var buffer = '', stack1;
+    var DS = __dependency1__["default"];
 
-
-      stack1 = helpers._triageMustache.call(depth0, "navigation-component", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("\n\n");
-      stack1 = helpers._triageMustache.call(depth0, "outlet", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("\n");
-      return buffer;
-      
+    __exports__["default"] = DS.RESTSerializer.extend({
+    	attrs: {
+    		party: {embedded: 'always'}
+    	}
     });
+  });
+define("trpo/templates/application", 
+  ["exports"],
+  function(__exports__) {
+    "use strict";
+    __exports__["default"] = Ember.HTMLBars.template((function() {
+      return {
+        isHTMLBars: true,
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n\n");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          var hooks = env.hooks, content = hooks.content;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          if (this.cachedFragment) { dom.repairClonedNode(fragment,[0]); }
+          var morph0 = dom.createMorphAt(fragment,0,1,contextualElement);
+          var morph1 = dom.createMorphAt(fragment,1,2,contextualElement);
+          content(env, morph0, context, "navigation-component");
+          content(env, morph1, context, "outlet");
+          return fragment;
+        }
+      };
+    }()));
   });
 define("trpo/templates/components/bs-button", 
-  ["ember","exports"],
-  function(__dependency1__, __exports__) {
+  ["exports"],
+  function(__exports__) {
     "use strict";
-    var Ember = __dependency1__["default"];
-    __exports__["default"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-    this.compilerInfo = [4,'>= 1.0.0'];
-    helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-      var buffer = '', stack1, escapeExpression=this.escapeExpression, self=this;
-
-    function program1(depth0,data) {
-      
-      var buffer = '';
-      data.buffer.push("<i ");
-      data.buffer.push(escapeExpression(helpers['bind-attr'].call(depth0, {hash:{
-        'class': ("icon")
-      },hashTypes:{'class': "STRING"},hashContexts:{'class': depth0},contexts:[],types:[],data:data})));
-      data.buffer.push("></i> ");
-      return buffer;
-      }
-
-      stack1 = helpers['if'].call(depth0, "icon", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      stack1 = helpers._triageMustache.call(depth0, "text", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      stack1 = helpers._triageMustache.call(depth0, "yield", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      return buffer;
-      
-    });
+    __exports__["default"] = Ember.HTMLBars.template((function() {
+      var child0 = (function() {
+        return {
+          isHTMLBars: true,
+          blockParams: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          build: function build(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createElement("i");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode(" ");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          render: function render(context, env, contextualElement) {
+            var dom = env.dom;
+            var hooks = env.hooks, element = hooks.element;
+            dom.detectNamespace(contextualElement);
+            var fragment;
+            if (env.useFragmentCache && dom.canClone) {
+              if (this.cachedFragment === null) {
+                fragment = this.build(dom);
+                if (this.hasRendered) {
+                  this.cachedFragment = fragment;
+                } else {
+                  this.hasRendered = true;
+                }
+              }
+              if (this.cachedFragment) {
+                fragment = dom.cloneNode(this.cachedFragment, true);
+              }
+            } else {
+              fragment = this.build(dom);
+            }
+            var element0 = dom.childAt(fragment, [0]);
+            element(env, element0, context, "bind-attr", [], {"class": "icon"});
+            return fragment;
+          }
+        };
+      }());
+      return {
+        isHTMLBars: true,
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          var hooks = env.hooks, get = hooks.get, block = hooks.block, content = hooks.content;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          if (this.cachedFragment) { dom.repairClonedNode(fragment,[0,1,2,3]); }
+          var morph0 = dom.createMorphAt(fragment,0,1,contextualElement);
+          var morph1 = dom.createMorphAt(fragment,1,2,contextualElement);
+          var morph2 = dom.createMorphAt(fragment,2,3,contextualElement);
+          block(env, morph0, context, "if", [get(env, context, "icon")], {}, child0, null);
+          content(env, morph1, context, "text");
+          content(env, morph2, context, "yield");
+          return fragment;
+        }
+      };
+    }()));
   });
 define("trpo/templates/components/grade-component", 
-  ["ember","exports"],
-  function(__dependency1__, __exports__) {
+  ["exports"],
+  function(__exports__) {
     "use strict";
-    var Ember = __dependency1__["default"];
-    __exports__["default"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-    this.compilerInfo = [4,'>= 1.0.0'];
-    helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-      var buffer = '', stack1;
-
-
-      stack1 = helpers._triageMustache.call(depth0, "yield", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("\n");
-      return buffer;
-      
-    });
+    __exports__["default"] = Ember.HTMLBars.template((function() {
+      return {
+        isHTMLBars: true,
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          var hooks = env.hooks, content = hooks.content;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          if (this.cachedFragment) { dom.repairClonedNode(fragment,[0]); }
+          var morph0 = dom.createMorphAt(fragment,0,1,contextualElement);
+          content(env, morph0, context, "yield");
+          return fragment;
+        }
+      };
+    }()));
   });
 define("trpo/templates/components/list-filter", 
-  ["ember","exports"],
-  function(__dependency1__, __exports__) {
+  ["exports"],
+  function(__exports__) {
     "use strict";
-    var Ember = __dependency1__["default"];
-    __exports__["default"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-    this.compilerInfo = [4,'>= 1.0.0'];
-    helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-      var buffer = '', stack1, helper, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
-
-    function program1(depth0,data) {
-      
-      var buffer = '', helper, options;
-      data.buffer.push("\n    ");
-      data.buffer.push(escapeExpression((helper = helpers.partial || (depth0 && depth0.partial),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "partial", options) : helperMissing.call(depth0, "partial", "partial", options))));
-      data.buffer.push("\n  ");
-      return buffer;
-      }
-
-      data.buffer.push(escapeExpression((helper = helpers.input || (depth0 && depth0.input),options={hash:{
-        'value': ("filterQuery"),
-        'placeholder': ("placeholder")
-      },hashTypes:{'value': "ID",'placeholder': "ID"},hashContexts:{'value': depth0,'placeholder': depth0},contexts:[],types:[],data:data},helper ? helper.call(depth0, options) : helperMissing.call(depth0, "input", options))));
-      data.buffer.push("\n\n<ul ");
-      data.buffer.push(escapeExpression((helper = helpers.bindAttr || (depth0 && depth0.bindAttr),options={hash:{
-        'class': ("listClass")
-      },hashTypes:{'class': "ID"},hashContexts:{'class': depth0},contexts:[],types:[],data:data},helper ? helper.call(depth0, options) : helperMissing.call(depth0, "bindAttr", options))));
-      data.buffer.push(">\n  ");
-      stack1 = helpers.each.call(depth0, "listFilterObject", "in", "filteredList", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("\n</ul>\n");
-      return buffer;
-      
-    });
+    __exports__["default"] = Ember.HTMLBars.template((function() {
+      var child0 = (function() {
+        return {
+          isHTMLBars: true,
+          blockParams: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          build: function build(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("    ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          render: function render(context, env, contextualElement) {
+            var dom = env.dom;
+            var hooks = env.hooks, get = hooks.get, inline = hooks.inline;
+            dom.detectNamespace(contextualElement);
+            var fragment;
+            if (env.useFragmentCache && dom.canClone) {
+              if (this.cachedFragment === null) {
+                fragment = this.build(dom);
+                if (this.hasRendered) {
+                  this.cachedFragment = fragment;
+                } else {
+                  this.hasRendered = true;
+                }
+              }
+              if (this.cachedFragment) {
+                fragment = dom.cloneNode(this.cachedFragment, true);
+              }
+            } else {
+              fragment = this.build(dom);
+            }
+            var morph0 = dom.createMorphAt(fragment,0,1,contextualElement);
+            inline(env, morph0, context, "partial", [get(env, context, "partial")], {});
+            return fragment;
+          }
+        };
+      }());
+      return {
+        isHTMLBars: true,
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n\n");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("ul");
+          var el2 = dom.createTextNode("\n");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          var hooks = env.hooks, get = hooks.get, inline = hooks.inline, element = hooks.element, block = hooks.block;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          if (this.cachedFragment) { dom.repairClonedNode(fragment,[0]); }
+          var element0 = dom.childAt(fragment, [2]);
+          var morph0 = dom.createMorphAt(fragment,0,1,contextualElement);
+          var morph1 = dom.createMorphAt(element0,0,-1);
+          inline(env, morph0, context, "input", [], {"value": get(env, context, "filterQuery"), "placeholder": get(env, context, "placeholder")});
+          element(env, element0, context, "bindAttr", [], {"class": get(env, context, "listClass")});
+          block(env, morph1, context, "each", [get(env, context, "filteredList")], {"keyword": "listFilterObject"}, child0, null);
+          return fragment;
+        }
+      };
+    }()));
   });
 define("trpo/templates/components/member-component", 
-  ["ember","exports"],
-  function(__dependency1__, __exports__) {
+  ["exports"],
+  function(__exports__) {
     "use strict";
-    var Ember = __dependency1__["default"];
-    __exports__["default"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-    this.compilerInfo = [4,'>= 1.0.0'];
-    helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-      var buffer = '', stack1, helper, options, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
-
-
-      data.buffer.push("<div class=\"member-container\" ");
-      data.buffer.push(escapeExpression(helpers.action.call(depth0, "toggleMemberState", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["STRING"],data:data})));
-      data.buffer.push(">\n	<div class=\"member-inner\">\n		<div class=\"front\" ");
-      data.buffer.push(escapeExpression((helper = helpers.bindAttr || (depth0 && depth0.bindAttr),options={hash:{
-        'style': ("inlineStyle")
-      },hashTypes:{'style': "ID"},hashContexts:{'style': depth0},contexts:[],types:[],data:data},helper ? helper.call(depth0, options) : helperMissing.call(depth0, "bindAttr", options))));
-      data.buffer.push(">\n			<img class=\"party-logo\" src=\"http://upload.wikimedia.org/wikipedia/he/thumb/8/89/Shas.png/150px-Shas.png\">\n			<div class=\"name\">\n				<span class=\"badge\">");
-      data.buffer.push(escapeExpression((helper = helpers['number-incrementor'] || (depth0 && depth0['number-incrementor']),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "index", options) : helperMissing.call(depth0, "number-incrementor", "index", options))));
-      data.buffer.push("</span> ");
-      stack1 = helpers._triageMustache.call(depth0, "data.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("\n				<h3 class=\"grade\">\n					");
-      stack1 = helpers._triageMustache.call(depth0, "data.grade", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("\n				</h3>\n			</div>\n		</div>	\n		<div class=\"back\">\n			<ul class=\"list-unstyled\">\n				<li><a href=\"#\" onclick=\"event.stopPropagation();\" target=\"_blank\">");
-      stack1 = helpers._triageMustache.call(depth0, "data.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("</a></li>\n				<li>ציון - ");
-      stack1 = helpers._triageMustache.call(depth0, "data.grade", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("</li>\n				<li>ממוצע נוכחות שבועי - ");
-      stack1 = helpers._triageMustache.call(depth0, "data.averageWeeklyPresenceHours", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("</li>\n				<li>ממוצע נוכחות וועדות חודשי - ");
-      stack1 = helpers._triageMustache.call(depth0, "data.averageMonthlyCommitteePresence", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("</li>\n				<li>הצעות חוק - ");
-      stack1 = helpers._triageMustache.call(depth0, "data.proposedBills", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push(" (אושרו - ");
-      stack1 = helpers._triageMustache.call(depth0, "data.approvedBills", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push(")</li>\n			</ul>\n		</div>\n	</div>\n</div>");
-      return buffer;
-      
-    });
+    __exports__["default"] = Ember.HTMLBars.template((function() {
+      return {
+        isHTMLBars: true,
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createElement("div");
+          dom.setAttribute(el0,"class","member-container");
+          var el1 = dom.createTextNode("\n	");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("div");
+          dom.setAttribute(el1,"class","member-inner");
+          var el2 = dom.createTextNode("\n		");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2,"class","front");
+          var el3 = dom.createTextNode("\n			");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("img");
+          dom.setAttribute(el3,"class","party-logo");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n			");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("div");
+          dom.setAttribute(el3,"class","name");
+          var el4 = dom.createTextNode("\n				");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createElement("span");
+          dom.setAttribute(el4,"class","badge");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode(" ");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("\n				");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createElement("h3");
+          dom.setAttribute(el4,"class","grade");
+          var el5 = dom.createTextNode("\n					");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createTextNode("\n				");
+          dom.appendChild(el4, el5);
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("\n			");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n		");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("	\n		");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2,"class","back");
+          var el3 = dom.createTextNode("\n			");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("ul");
+          dom.setAttribute(el3,"class","list-unstyled");
+          var el4 = dom.createTextNode("\n				");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createElement("li");
+          var el5 = dom.createTextNode("\n					");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createElement("a");
+          dom.setAttribute(el5,"onclick","event.stopPropagation();");
+          dom.setAttribute(el5,"target","_blank");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createTextNode(" - \n					(");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createElement("a");
+          dom.setAttribute(el5,"onclick","event.stopPropagation();");
+          dom.setAttribute(el5,"target","_blank");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createTextNode(")\n				");
+          dom.appendChild(el4, el5);
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("\n				");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createElement("li");
+          var el5 = dom.createTextNode("ציון - ");
+          dom.appendChild(el4, el5);
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("\n				");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createElement("li");
+          var el5 = dom.createTextNode("ממוצע נוכחות שבועי - ");
+          dom.appendChild(el4, el5);
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("\n				");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createElement("li");
+          var el5 = dom.createTextNode("ממוצע נוכחות וועדות חודשי - ");
+          dom.appendChild(el4, el5);
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("\n				");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createElement("li");
+          var el5 = dom.createTextNode("הצעות חוק - ");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createTextNode(" (אושרו - ");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createTextNode(")");
+          dom.appendChild(el4, el5);
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("\n			");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n		");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n	");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          var hooks = env.hooks, element = hooks.element, get = hooks.get, inline = hooks.inline, content = hooks.content;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          var element0 = fragment;
+          var element1 = dom.childAt(element0, [1]);
+          var element2 = dom.childAt(element1, [1]);
+          var element3 = dom.childAt(element2, [1]);
+          var element4 = dom.childAt(element2, [3]);
+          var element5 = dom.childAt(element1, [3, 1]);
+          var element6 = dom.childAt(element5, [1]);
+          var element7 = dom.childAt(element6, [1]);
+          var element8 = dom.childAt(element6, [3]);
+          var element9 = dom.childAt(element5, [9]);
+          var morph0 = dom.createMorphAt(dom.childAt(element4, [1]),-1,-1);
+          var morph1 = dom.createMorphAt(element4,2,3);
+          var morph2 = dom.createMorphAt(dom.childAt(element4, [4]),0,1);
+          var morph3 = dom.createMorphAt(element7,-1,-1);
+          var morph4 = dom.createMorphAt(element8,-1,-1);
+          var morph5 = dom.createMorphAt(dom.childAt(element5, [3]),0,-1);
+          var morph6 = dom.createMorphAt(dom.childAt(element5, [5]),0,-1);
+          var morph7 = dom.createMorphAt(dom.childAt(element5, [7]),0,-1);
+          var morph8 = dom.createMorphAt(element9,0,1);
+          var morph9 = dom.createMorphAt(element9,1,2);
+          element(env, element0, context, "action", ["toggleMemberState"], {});
+          element(env, element2, context, "bind-attr", [], {"style": get(env, context, "inlineStyle")});
+          element(env, element3, context, "bind-attr", [], {"src": get(env, context, "data.party.imageUrl")});
+          inline(env, morph0, context, "number-incrementor", [get(env, context, "index")], {});
+          content(env, morph1, context, "data.name");
+          content(env, morph2, context, "data.grade");
+          element(env, element7, context, "bind-attr", [], {"href": get(env, context, "memberLink")});
+          content(env, morph3, context, "data.name");
+          element(env, element8, context, "bind-attr", [], {"href": get(env, context, "partyLink")});
+          content(env, morph4, context, "data.party.name");
+          content(env, morph5, context, "data.grade");
+          content(env, morph6, context, "data.averageWeeklyPresenceHours");
+          content(env, morph7, context, "data.averageMonthlyCommitteePresence");
+          content(env, morph8, context, "data.proposedBills");
+          content(env, morph9, context, "data.approvedBills");
+          return fragment;
+        }
+      };
+    }()));
   });
 define("trpo/templates/components/navigation-component", 
-  ["ember","exports"],
-  function(__dependency1__, __exports__) {
+  ["exports"],
+  function(__exports__) {
     "use strict";
-    var Ember = __dependency1__["default"];
-    __exports__["default"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-    this.compilerInfo = [4,'>= 1.0.0'];
-    helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-      var buffer = '', stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
-
-    function program1(depth0,data) {
-      
-      
-      data.buffer.push("חברי כנסת");
-      }
-
-    function program3(depth0,data) {
-      
-      
-      data.buffer.push("מפלגות");
-      }
-
-      stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["STRING"],data:data},helper ? helper.call(depth0, "members", options) : helperMissing.call(depth0, "link-to", "members", options));
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("\n | \n");
-      stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["STRING"],data:data},helper ? helper.call(depth0, "parties", options) : helperMissing.call(depth0, "link-to", "parties", options));
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      return buffer;
-      
-    });
+    __exports__["default"] = Ember.HTMLBars.template((function() {
+      var child0 = (function() {
+        return {
+          isHTMLBars: true,
+          blockParams: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          build: function build(dom) {
+            var el0 = dom.createTextNode("חברי כנסת");
+            return el0;
+          },
+          render: function render(context, env, contextualElement) {
+            var dom = env.dom;
+            dom.detectNamespace(contextualElement);
+            var fragment;
+            if (env.useFragmentCache && dom.canClone) {
+              if (this.cachedFragment === null) {
+                fragment = this.build(dom);
+                if (this.hasRendered) {
+                  this.cachedFragment = fragment;
+                } else {
+                  this.hasRendered = true;
+                }
+              }
+              if (this.cachedFragment) {
+                fragment = dom.cloneNode(this.cachedFragment, true);
+              }
+            } else {
+              fragment = this.build(dom);
+            }
+            return fragment;
+          }
+        };
+      }());
+      var child1 = (function() {
+        return {
+          isHTMLBars: true,
+          blockParams: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          build: function build(dom) {
+            var el0 = dom.createTextNode("מפלגות");
+            return el0;
+          },
+          render: function render(context, env, contextualElement) {
+            var dom = env.dom;
+            dom.detectNamespace(contextualElement);
+            var fragment;
+            if (env.useFragmentCache && dom.canClone) {
+              if (this.cachedFragment === null) {
+                fragment = this.build(dom);
+                if (this.hasRendered) {
+                  this.cachedFragment = fragment;
+                } else {
+                  this.hasRendered = true;
+                }
+              }
+              if (this.cachedFragment) {
+                fragment = dom.cloneNode(this.cachedFragment, true);
+              }
+            } else {
+              fragment = this.build(dom);
+            }
+            return fragment;
+          }
+        };
+      }());
+      return {
+        isHTMLBars: true,
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n | \n");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          var hooks = env.hooks, block = hooks.block;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          if (this.cachedFragment) { dom.repairClonedNode(fragment,[0,2]); }
+          var morph0 = dom.createMorphAt(fragment,0,1,contextualElement);
+          var morph1 = dom.createMorphAt(fragment,1,2,contextualElement);
+          block(env, morph0, context, "link-to", ["members"], {}, child0, null);
+          block(env, morph1, context, "link-to", ["parties"], {}, child1, null);
+          return fragment;
+        }
+      };
+    }()));
+  });
+define("trpo/templates/components/party-label", 
+  ["exports"],
+  function(__exports__) {
+    "use strict";
+    __exports__["default"] = Ember.HTMLBars.template((function() {
+      return {
+        isHTMLBars: true,
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          var hooks = env.hooks, content = hooks.content;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          if (this.cachedFragment) { dom.repairClonedNode(fragment,[0,1]); }
+          var morph0 = dom.createMorphAt(fragment,0,1,contextualElement);
+          content(env, morph0, context, "data.name");
+          return fragment;
+        }
+      };
+    }()));
   });
 define("trpo/templates/index", 
-  ["ember","exports"],
-  function(__dependency1__, __exports__) {
+  ["exports"],
+  function(__exports__) {
     "use strict";
-    var Ember = __dependency1__["default"];
-    __exports__["default"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-    this.compilerInfo = [4,'>= 1.0.0'];
-    helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-      var buffer = '', stack1;
-
-
-      stack1 = helpers._triageMustache.call(depth0, "outlet", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("\n");
-      return buffer;
-      
-    });
+    __exports__["default"] = Ember.HTMLBars.template((function() {
+      return {
+        isHTMLBars: true,
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          var hooks = env.hooks, content = hooks.content;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          if (this.cachedFragment) { dom.repairClonedNode(fragment,[0]); }
+          var morph0 = dom.createMorphAt(fragment,0,1,contextualElement);
+          content(env, morph0, context, "outlet");
+          return fragment;
+        }
+      };
+    }()));
   });
 define("trpo/templates/members", 
-  ["ember","exports"],
-  function(__dependency1__, __exports__) {
+  ["exports"],
+  function(__exports__) {
     "use strict";
-    var Ember = __dependency1__["default"];
-    __exports__["default"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-    this.compilerInfo = [4,'>= 1.0.0'];
-    helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-      var buffer = '', stack1, helper, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
-
-    function program1(depth0,data) {
-      
-      var buffer = '', helper, options;
-      data.buffer.push("\n				");
-      data.buffer.push(escapeExpression((helper = helpers['member-component'] || (depth0 && depth0['member-component']),options={hash:{
-        'data': ("memeber"),
-        'index': ("_view.contentIndex"),
-        'action': ("toggleActive")
-      },hashTypes:{'data': "ID",'index': "ID",'action': "STRING"},hashContexts:{'data': depth0,'index': depth0,'action': depth0},contexts:[],types:[],data:data},helper ? helper.call(depth0, options) : helperMissing.call(depth0, "member-component", options))));
-      data.buffer.push("\n			");
-      return buffer;
-      }
-
-    function program3(depth0,data) {
-      
-      
-      data.buffer.push("\n				<p class=\"no-results\">לא נמצא תוצאות. אנא <b>נסה שנית.</b></p>\n			");
-      }
-
-      data.buffer.push("<section class=\"members-page\">\n	<div class=\"members-title title\">\n		<h1>חברי כנסת</h1>\n		");
-      data.buffer.push(escapeExpression((helper = helpers.input || (depth0 && depth0.input),options={hash:{
-        'type': ("search"),
-        'class': ("form-control"),
-        'placeholder': ("חפש חבר כנסת או מפלגה"),
-        'value': ("searchTerm")
-      },hashTypes:{'type': "STRING",'class': "STRING",'placeholder': "STRING",'value': "ID"},hashContexts:{'type': depth0,'class': depth0,'placeholder': depth0,'value': depth0},contexts:[],types:[],data:data},helper ? helper.call(depth0, options) : helperMissing.call(depth0, "input", options))));
-      data.buffer.push("\n	</div>\n\n	<section class=\"members-list container-fluid\">\n		<div class=\"row\">\n			");
-      stack1 = helpers.each.call(depth0, "memeber", "in", "filterdMembers", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("\n		</div>\n	</section>\n</section>\n\n");
-      stack1 = helpers._triageMustache.call(depth0, "outlet", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      return buffer;
-      
-    });
+    __exports__["default"] = Ember.HTMLBars.template((function() {
+      var child0 = (function() {
+        return {
+          isHTMLBars: true,
+          blockParams: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          build: function build(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("			");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          render: function render(context, env, contextualElement) {
+            var dom = env.dom;
+            var hooks = env.hooks, get = hooks.get, inline = hooks.inline;
+            dom.detectNamespace(contextualElement);
+            var fragment;
+            if (env.useFragmentCache && dom.canClone) {
+              if (this.cachedFragment === null) {
+                fragment = this.build(dom);
+                if (this.hasRendered) {
+                  this.cachedFragment = fragment;
+                } else {
+                  this.hasRendered = true;
+                }
+              }
+              if (this.cachedFragment) {
+                fragment = dom.cloneNode(this.cachedFragment, true);
+              }
+            } else {
+              fragment = this.build(dom);
+            }
+            var morph0 = dom.createMorphAt(fragment,0,1,contextualElement);
+            inline(env, morph0, context, "party-label", [], {"data": get(env, context, "party"), "action": "filterParties"});
+            return fragment;
+          }
+        };
+      }());
+      var child1 = (function() {
+        return {
+          isHTMLBars: true,
+          blockParams: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          build: function build(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("				");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          render: function render(context, env, contextualElement) {
+            var dom = env.dom;
+            var hooks = env.hooks, get = hooks.get, inline = hooks.inline;
+            dom.detectNamespace(contextualElement);
+            var fragment;
+            if (env.useFragmentCache && dom.canClone) {
+              if (this.cachedFragment === null) {
+                fragment = this.build(dom);
+                if (this.hasRendered) {
+                  this.cachedFragment = fragment;
+                } else {
+                  this.hasRendered = true;
+                }
+              }
+              if (this.cachedFragment) {
+                fragment = dom.cloneNode(this.cachedFragment, true);
+              }
+            } else {
+              fragment = this.build(dom);
+            }
+            var morph0 = dom.createMorphAt(fragment,0,1,contextualElement);
+            inline(env, morph0, context, "member-component", [], {"data": get(env, context, "memeber"), "index": get(env, context, "_view.contentIndex")});
+            return fragment;
+          }
+        };
+      }());
+      var child2 = (function() {
+        return {
+          isHTMLBars: true,
+          blockParams: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          build: function build(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("				");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("p");
+            dom.setAttribute(el1,"class","no-results");
+            var el2 = dom.createTextNode("לא נמצא תוצאות. אנא ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("b");
+            var el3 = dom.createTextNode("נסה שנית.");
+            dom.appendChild(el2, el3);
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          render: function render(context, env, contextualElement) {
+            var dom = env.dom;
+            dom.detectNamespace(contextualElement);
+            var fragment;
+            if (env.useFragmentCache && dom.canClone) {
+              if (this.cachedFragment === null) {
+                fragment = this.build(dom);
+                if (this.hasRendered) {
+                  this.cachedFragment = fragment;
+                } else {
+                  this.hasRendered = true;
+                }
+              }
+              if (this.cachedFragment) {
+                fragment = dom.cloneNode(this.cachedFragment, true);
+              }
+            } else {
+              fragment = this.build(dom);
+            }
+            return fragment;
+          }
+        };
+      }());
+      return {
+        isHTMLBars: true,
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createElement("section");
+          dom.setAttribute(el1,"class","members-page");
+          var el2 = dom.createTextNode("\n	");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2,"class","members-title title");
+          var el3 = dom.createTextNode("\n		");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("h1");
+          var el4 = dom.createTextNode("חברי כנסת");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n		");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("	");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n\n	");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("section");
+          dom.setAttribute(el2,"class","members-list container-fluid");
+          var el3 = dom.createTextNode("\n		");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("div");
+          dom.setAttribute(el3,"class","row");
+          var el4 = dom.createTextNode("\n");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("		");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n	");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n\n");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          var hooks = env.hooks, get = hooks.get, inline = hooks.inline, block = hooks.block, content = hooks.content;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          if (this.cachedFragment) { dom.repairClonedNode(fragment,[2]); }
+          var element0 = dom.childAt(fragment, [0]);
+          var element1 = dom.childAt(element0, [1]);
+          var morph0 = dom.createMorphAt(element1,2,3);
+          var morph1 = dom.createMorphAt(element1,3,4);
+          var morph2 = dom.createMorphAt(dom.childAt(element0, [3, 1]),0,1);
+          var morph3 = dom.createMorphAt(fragment,1,2,contextualElement);
+          inline(env, morph0, context, "input", [], {"type": "search", "class": "form-control", "placeholder": "חפש חבר כנסת", "value": get(env, context, "searchTerm")});
+          block(env, morph1, context, "each", [get(env, context, "parties")], {"keyword": "party"}, child0, null);
+          block(env, morph2, context, "each", [get(env, context, "filterdMembers")], {"keyword": "memeber"}, child1, child2);
+          content(env, morph3, context, "outlet");
+          return fragment;
+        }
+      };
+    }()));
   });
 define("trpo/templates/parties", 
-  ["ember","exports"],
-  function(__dependency1__, __exports__) {
+  ["exports"],
+  function(__exports__) {
     "use strict";
-    var Ember = __dependency1__["default"];
-    __exports__["default"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-    this.compilerInfo = [4,'>= 1.0.0'];
-    helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-      var buffer = '', stack1, helper, options, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
-
-    function program1(depth0,data) {
-      
-      var buffer = '', stack1;
-      data.buffer.push("\n			<div class=\"party col-xs-6 col-md-3 col-lg-2\">\n				<img ");
-      data.buffer.push(escapeExpression(helpers['bind-attr'].call(depth0, {hash:{
-        'src': ("imageUrl")
-      },hashTypes:{'src': "ID"},hashContexts:{'src': depth0},contexts:[],types:[],data:data})));
-      data.buffer.push(">\n				<span class=\"grade\">");
-      stack1 = helpers._triageMustache.call(depth0, "grade", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("</span>\n			</div>\n		");
-      return buffer;
-      }
-
-      data.buffer.push("<section class=\"parties-list container-fluid\">\n	<div class=\"row\">\n		");
-      data.buffer.push(escapeExpression((helper = helpers.input || (depth0 && depth0.input),options={hash:{
-        'type': ("search"),
-        'class': ("form-control"),
-        'placeholder': ("חפש חבר כנסת או מפלגה"),
-        'value': ("searchTerm")
-      },hashTypes:{'type': "STRING",'class': "STRING",'placeholder': "STRING",'value': "ID"},hashContexts:{'type': depth0,'class': depth0,'placeholder': depth0,'value': depth0},contexts:[],types:[],data:data},helper ? helper.call(depth0, options) : helperMissing.call(depth0, "input", options))));
-      data.buffer.push("\n	</div>\n	<div class=\"row\">\n		");
-      stack1 = helpers.each.call(depth0, {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[],types:[],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("\n	</div>\n</section>\n\n");
-      stack1 = helpers._triageMustache.call(depth0, "outlet", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-      if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-      data.buffer.push("\n");
-      return buffer;
-      
-    });
+    __exports__["default"] = Ember.HTMLBars.template((function() {
+      var child0 = (function() {
+        return {
+          isHTMLBars: true,
+          blockParams: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          build: function build(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("			");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("div");
+            dom.setAttribute(el1,"class","party col-xs-6 col-md-3 col-lg-2");
+            var el2 = dom.createTextNode("\n				");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("img");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n				");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("span");
+            dom.setAttribute(el2,"class","grade");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n			");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          render: function render(context, env, contextualElement) {
+            var dom = env.dom;
+            var hooks = env.hooks, get = hooks.get, element = hooks.element, content = hooks.content;
+            dom.detectNamespace(contextualElement);
+            var fragment;
+            if (env.useFragmentCache && dom.canClone) {
+              if (this.cachedFragment === null) {
+                fragment = this.build(dom);
+                if (this.hasRendered) {
+                  this.cachedFragment = fragment;
+                } else {
+                  this.hasRendered = true;
+                }
+              }
+              if (this.cachedFragment) {
+                fragment = dom.cloneNode(this.cachedFragment, true);
+              }
+            } else {
+              fragment = this.build(dom);
+            }
+            var element0 = dom.childAt(fragment, [1]);
+            var element1 = dom.childAt(element0, [1]);
+            var morph0 = dom.createMorphAt(dom.childAt(element0, [3]),-1,-1);
+            element(env, element1, context, "bind-attr", [], {"src": get(env, context, "imageUrl")});
+            content(env, morph0, context, "grade");
+            return fragment;
+          }
+        };
+      }());
+      return {
+        isHTMLBars: true,
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createElement("section");
+          dom.setAttribute(el1,"class","parties-list container-fluid");
+          var el2 = dom.createTextNode("\n	");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2,"class","row");
+          var el3 = dom.createTextNode("\n		");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n	");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n	");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2,"class","row");
+          var el3 = dom.createTextNode("\n");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("	");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n\n");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          var hooks = env.hooks, get = hooks.get, inline = hooks.inline, block = hooks.block, content = hooks.content;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          var element2 = dom.childAt(fragment, [0]);
+          var morph0 = dom.createMorphAt(dom.childAt(element2, [1]),0,1);
+          var morph1 = dom.createMorphAt(dom.childAt(element2, [3]),0,1);
+          var morph2 = dom.createMorphAt(fragment,1,2,contextualElement);
+          inline(env, morph0, context, "input", [], {"type": "search", "class": "form-control", "placeholder": "חפש חבר כנסת או מפלגה", "value": get(env, context, "searchTerm")});
+          block(env, morph1, context, "each", [], {}, child0, null);
+          content(env, morph2, context, "outlet");
+          return fragment;
+        }
+      };
+    }()));
   });
 define("trpo/tests/adapters/application.jshint", 
   [],
@@ -597,13 +1379,22 @@ define("trpo/tests/components/member-component.jshint",
       ok(true, 'components/member-component.js should pass jshint.'); 
     });
   });
+define("trpo/tests/components/party-label.jshint", 
+  [],
+  function() {
+    "use strict";
+    module('JSHint - components');
+    test('components/party-label.js should pass jshint', function() { 
+      ok(true, 'components/party-label.js should pass jshint.'); 
+    });
+  });
 define("trpo/tests/controllers/members.jshint", 
   [],
   function() {
     "use strict";
     module('JSHint - controllers');
     test('controllers/members.js should pass jshint', function() { 
-      ok(false, 'controllers/members.js should pass jshint.\ncontrollers/members.js: line 14, col 13, Forgotten \'debugger\' statement?\ncontrollers/members.js: line 13, col 37, \'member\' is defined but never used.\n\n2 errors'); 
+      ok(true, 'controllers/members.js should pass jshint.'); 
     });
   });
 define("trpo/tests/helpers/number-incrementor.jshint", 
@@ -697,7 +1488,7 @@ define("trpo/tests/routes/members.jshint",
     "use strict";
     module('JSHint - routes');
     test('routes/members.js should pass jshint', function() { 
-      ok(false, 'routes/members.js should pass jshint.\nroutes/members.js: line 13, col 13, Forgotten \'debugger\' statement?\nroutes/members.js: line 12, col 32, \'member\' is defined but never used.\n\n2 errors'); 
+      ok(true, 'routes/members.js should pass jshint.'); 
     });
   });
 define("trpo/tests/routes/parties.jshint", 
@@ -707,6 +1498,15 @@ define("trpo/tests/routes/parties.jshint",
     module('JSHint - routes');
     test('routes/parties.js should pass jshint', function() { 
       ok(true, 'routes/parties.js should pass jshint.'); 
+    });
+  });
+define("trpo/tests/serializers/member.jshint", 
+  [],
+  function() {
+    "use strict";
+    module('JSHint - serializers');
+    test('serializers/member.js should pass jshint', function() { 
+      ok(true, 'serializers/member.js should pass jshint.'); 
     });
   });
 define("trpo/tests/test-helper", 
@@ -776,6 +1576,15 @@ define("trpo/tests/trpo/tests/unit/components/member-component-test.jshint",
     module('JSHint - trpo/tests/unit/components');
     test('trpo/tests/unit/components/member-component-test.js should pass jshint', function() { 
       ok(true, 'trpo/tests/unit/components/member-component-test.js should pass jshint.'); 
+    });
+  });
+define("trpo/tests/trpo/tests/unit/components/party-label-test.jshint", 
+  [],
+  function() {
+    "use strict";
+    module('JSHint - trpo/tests/unit/components');
+    test('trpo/tests/unit/components/party-label-test.js should pass jshint', function() { 
+      ok(true, 'trpo/tests/unit/components/party-label-test.js should pass jshint.'); 
     });
   });
 define("trpo/tests/trpo/tests/unit/controllers/index-test.jshint", 
@@ -850,6 +1659,15 @@ define("trpo/tests/trpo/tests/unit/routes/parties-test.jshint",
       ok(true, 'trpo/tests/unit/routes/parties-test.js should pass jshint.'); 
     });
   });
+define("trpo/tests/trpo/tests/unit/serializers/member-test.jshint", 
+  [],
+  function() {
+    "use strict";
+    module('JSHint - trpo/tests/unit/serializers');
+    test('trpo/tests/unit/serializers/member-test.js should pass jshint', function() { 
+      ok(true, 'trpo/tests/unit/serializers/member-test.js should pass jshint.'); 
+    });
+  });
 define("trpo/tests/unit/adapters/application-test", 
   ["ember-qunit"],
   function(__dependency1__) {
@@ -900,6 +1718,30 @@ define("trpo/tests/unit/components/member-component-test",
     var test = __dependency1__.test;
 
     moduleForComponent('member-component', 'MemberComponentComponent', {
+      // specify the other units that are required for this test
+      // needs: ['component:foo', 'helper:bar']
+    });
+
+    test('it renders', function() {
+      expect(2);
+
+      // creates the component instance
+      var component = this.subject();
+      equal(component._state, 'preRender');
+
+      // appends the component to the page
+      this.append();
+      equal(component._state, 'inDOM');
+    });
+  });
+define("trpo/tests/unit/components/party-label-test", 
+  ["ember-qunit"],
+  function(__dependency1__) {
+    "use strict";
+    var moduleForComponent = __dependency1__.moduleForComponent;
+    var test = __dependency1__.test;
+
+    moduleForComponent('party-label', 'PartyLabelComponent', {
       // specify the other units that are required for this test
       // needs: ['component:foo', 'helper:bar']
     });
@@ -1051,6 +1893,24 @@ define("trpo/tests/unit/routes/parties-test",
     test('it exists', function() {
       var route = this.subject();
       ok(route);
+    });
+  });
+define("trpo/tests/unit/serializers/member-test", 
+  ["ember-qunit"],
+  function(__dependency1__) {
+    "use strict";
+    var moduleFor = __dependency1__.moduleFor;
+    var test = __dependency1__.test;
+
+    moduleFor('serializer:member', 'MemberSerializer', {
+      // Specify the other units that are required for this test.
+      // needs: ['serializer:foo']
+    });
+
+    // Replace this with your real tests.
+    test('it exists', function() {
+      var serializer = this.subject();
+      ok(serializer);
     });
   });
 /* jshint ignore:start */
