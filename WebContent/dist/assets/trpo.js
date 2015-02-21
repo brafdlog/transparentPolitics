@@ -278,9 +278,9 @@ define("trpo/routes/index",
     var Ember = __dependency1__["default"];
 
     __exports__["default"] = Ember.Route.extend({
-    	beforeModel: function() {
+    	/*beforeModel: function() {
     		this.transitionTo('members');
-    	}
+    	}*/
     });
   });
 define("trpo/routes/members", 
@@ -799,7 +799,7 @@ define("trpo/templates/components/navigation-component",
           cachedFragment: null,
           hasRendered: false,
           build: function build(dom) {
-            var el0 = dom.createTextNode("חברי כנסת");
+            var el0 = dom.createTextNode("עמוד הבית");
             return el0;
           },
           render: function render(context, env, contextualElement) {
@@ -826,6 +826,39 @@ define("trpo/templates/components/navigation-component",
         };
       }());
       var child1 = (function() {
+        return {
+          isHTMLBars: true,
+          blockParams: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          build: function build(dom) {
+            var el0 = dom.createTextNode("חברי כנסת");
+            return el0;
+          },
+          render: function render(context, env, contextualElement) {
+            var dom = env.dom;
+            dom.detectNamespace(contextualElement);
+            var fragment;
+            if (env.useFragmentCache && dom.canClone) {
+              if (this.cachedFragment === null) {
+                fragment = this.build(dom);
+                if (this.hasRendered) {
+                  this.cachedFragment = fragment;
+                } else {
+                  this.hasRendered = true;
+                }
+              }
+              if (this.cachedFragment) {
+                fragment = dom.cloneNode(this.cachedFragment, true);
+              }
+            } else {
+              fragment = this.build(dom);
+            }
+            return fragment;
+          }
+        };
+      }());
+      var child2 = (function() {
         return {
           isHTMLBars: true,
           blockParams: 0,
@@ -867,7 +900,9 @@ define("trpo/templates/components/navigation-component",
           var el0 = dom.createDocumentFragment();
           var el1 = dom.createTextNode("");
           dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n | \n");
+          var el1 = dom.createTextNode(" |\n");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode(" | \n");
           dom.appendChild(el0, el1);
           var el1 = dom.createTextNode("");
           dom.appendChild(el0, el1);
@@ -893,11 +928,13 @@ define("trpo/templates/components/navigation-component",
           } else {
             fragment = this.build(dom);
           }
-          if (this.cachedFragment) { dom.repairClonedNode(fragment,[0,2]); }
+          if (this.cachedFragment) { dom.repairClonedNode(fragment,[0,3]); }
           var morph0 = dom.createMorphAt(fragment,0,1,contextualElement);
           var morph1 = dom.createMorphAt(fragment,1,2,contextualElement);
-          block(env, morph0, context, "link-to", ["members"], {}, child0, null);
-          block(env, morph1, context, "link-to", ["parties"], {}, child1, null);
+          var morph2 = dom.createMorphAt(fragment,2,3,contextualElement);
+          block(env, morph0, context, "link-to", ["index"], {}, child0, null);
+          block(env, morph1, context, "link-to", ["members"], {}, child1, null);
+          block(env, morph2, context, "link-to", ["parties"], {}, child2, null);
           return fragment;
         }
       };
@@ -954,6 +991,72 @@ define("trpo/templates/index",
   function(__exports__) {
     "use strict";
     __exports__["default"] = Ember.HTMLBars.template((function() {
+      var child0 = (function() {
+        return {
+          isHTMLBars: true,
+          blockParams: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          build: function build(dom) {
+            var el0 = dom.createTextNode("חבר כנסת");
+            return el0;
+          },
+          render: function render(context, env, contextualElement) {
+            var dom = env.dom;
+            dom.detectNamespace(contextualElement);
+            var fragment;
+            if (env.useFragmentCache && dom.canClone) {
+              if (this.cachedFragment === null) {
+                fragment = this.build(dom);
+                if (this.hasRendered) {
+                  this.cachedFragment = fragment;
+                } else {
+                  this.hasRendered = true;
+                }
+              }
+              if (this.cachedFragment) {
+                fragment = dom.cloneNode(this.cachedFragment, true);
+              }
+            } else {
+              fragment = this.build(dom);
+            }
+            return fragment;
+          }
+        };
+      }());
+      var child1 = (function() {
+        return {
+          isHTMLBars: true,
+          blockParams: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          build: function build(dom) {
+            var el0 = dom.createTextNode("מפלגה");
+            return el0;
+          },
+          render: function render(context, env, contextualElement) {
+            var dom = env.dom;
+            dom.detectNamespace(contextualElement);
+            var fragment;
+            if (env.useFragmentCache && dom.canClone) {
+              if (this.cachedFragment === null) {
+                fragment = this.build(dom);
+                if (this.hasRendered) {
+                  this.cachedFragment = fragment;
+                } else {
+                  this.hasRendered = true;
+                }
+              }
+              if (this.cachedFragment) {
+                fragment = dom.cloneNode(this.cachedFragment, true);
+              }
+            } else {
+              fragment = this.build(dom);
+            }
+            return fragment;
+          }
+        };
+      }());
       return {
         isHTMLBars: true,
         blockParams: 0,
@@ -961,7 +1064,125 @@ define("trpo/templates/index",
         hasRendered: false,
         build: function build(dom) {
           var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("");
+          var el1 = dom.createElement("section");
+          dom.setAttribute(el1,"class","members-page");
+          var el2 = dom.createTextNode("\n	");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2,"class","members-title title");
+          var el3 = dom.createTextNode("\n		");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("h1");
+          var el4 = dom.createTextNode("טרפול ");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createElement("small");
+          var el5 = dom.createTextNode("פוליטיקה שקופה");
+          dom.appendChild(el4, el5);
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n	");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n\n	");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("section");
+          dom.setAttribute(el2,"class","about-us container-fluid");
+          var el3 = dom.createTextNode("\n		");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("div");
+          dom.setAttribute(el3,"class","row");
+          var el4 = dom.createTextNode("\n			");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createElement("div");
+          dom.setAttribute(el4,"class","col-xs-12");
+          var el5 = dom.createTextNode("\n				");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createElement("h3");
+          var el6 = dom.createTextNode("מה זה האתר הזה?");
+          dom.appendChild(el5, el6);
+          dom.appendChild(el4, el5);
+          var el5 = dom.createTextNode("\n				");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createElement("p");
+          var el6 = dom.createTextNode("\n					");
+          dom.appendChild(el5, el6);
+          var el6 = dom.createElement("strong");
+          var el7 = dom.createTextNode("טרפול מספק ציון אוביקטיבי עבור כל ");
+          dom.appendChild(el6, el7);
+          var el7 = dom.createTextNode(" ו");
+          dom.appendChild(el6, el7);
+          var el7 = dom.createTextNode(".");
+          dom.appendChild(el6, el7);
+          dom.appendChild(el5, el6);
+          var el6 = dom.createElement("br");
+          dom.appendChild(el5, el6);
+          var el6 = dom.createTextNode("\n					רוצים לדעת איך זה עובד? תמשיכו לקרוא...\n				");
+          dom.appendChild(el5, el6);
+          dom.appendChild(el4, el5);
+          var el5 = dom.createTextNode("\n				");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createElement("p");
+          var el6 = dom.createTextNode("\n					המטרה שלנו היא להראות לחברי הכנסת שאנחנו כן מחלקים להם ציונים! ");
+          dom.appendChild(el5, el6);
+          var el6 = dom.createElement("br");
+          dom.appendChild(el5, el6);
+          var el6 = dom.createTextNode("\nכפי שחלקיכם יודעים מדינת ישראל עשתה בשנים האחרונות שיפור גדול בנושא השקיפות וקבעה, כיום זמינים לנו (המפתחים) שירותים אשר מספקים מידע רב באמצעותו אנחנו יכולים לשקף לציבור מה באמת קורה בפוליטיקה שלנו. בין השירותים הזמינים כיום תוכלו למצוא את אתר ");
+          dom.appendChild(el5, el6);
+          var el6 = dom.createElement("a");
+          dom.setAttribute(el6,"href","https://oknesset.org/");
+          dom.setAttribute(el6,"target","_blank");
+          var el7 = dom.createTextNode("הכנסת הפתוחה");
+          dom.appendChild(el6, el7);
+          dom.appendChild(el5, el6);
+          var el6 = dom.createTextNode(" בו תמצאו מידע רחב אודות כל ח\"כ ומפלגה בישראל. רוצים לדעת לאיפה הולך הכסף? באתר ");
+          dom.appendChild(el5, el6);
+          var el6 = dom.createElement("a");
+          dom.setAttribute(el6,"href","http://www.obudget.org/");
+          dom.setAttribute(el6,"target","_blank");
+          var el7 = dom.createTextNode("התקציב");
+          dom.appendChild(el6, el7);
+          dom.appendChild(el5, el6);
+          var el6 = dom.createTextNode(" תוכלו לקבל תמונות מצב של כל תקציבי המדינה.\n				");
+          dom.appendChild(el5, el6);
+          dom.appendChild(el4, el5);
+          var el5 = dom.createTextNode("\n				");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createElement("p");
+          var el6 = dom.createTextNode("\n					אנחנו בחרנו לבנות מעל הכנסת הפתוחה אתר שנותן מיונים לחברי הכנסת על סמך ה\"ביצועים\" שלהם. אנחנו מתבססים על פרמטרים כגון נוכחות, חקיקה ומעורבות כדי לדרג עבורכם את חברי הכנסת ולהראות באופן שקוף מי מתאמץ כדי לשרת את הבוחרים שלו ומי בא לעבודה לשחק סוליטר.\n				");
+          dom.appendChild(el5, el6);
+          dom.appendChild(el4, el5);
+          var el5 = dom.createTextNode("\n			");
+          dom.appendChild(el4, el5);
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("\n			");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createElement("div");
+          dom.setAttribute(el4,"class","col-xs-12");
+          var el5 = dom.createTextNode("\n				");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createElement("h3");
+          var el6 = dom.createTextNode("אז איך זה עובד?");
+          dom.appendChild(el5, el6);
+          dom.appendChild(el4, el5);
+          var el5 = dom.createTextNode("\n				");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createElement("p");
+          var el6 = dom.createTextNode("\n					בקרוב...\n				");
+          dom.appendChild(el5, el6);
+          dom.appendChild(el4, el5);
+          var el5 = dom.createTextNode("\n			");
+          dom.appendChild(el4, el5);
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("\n		");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n	");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n\n");
           dom.appendChild(el0, el1);
           var el1 = dom.createTextNode("\n");
           dom.appendChild(el0, el1);
@@ -969,7 +1190,7 @@ define("trpo/templates/index",
         },
         render: function render(context, env, contextualElement) {
           var dom = env.dom;
-          var hooks = env.hooks, content = hooks.content;
+          var hooks = env.hooks, block = hooks.block, content = hooks.content;
           dom.detectNamespace(contextualElement);
           var fragment;
           if (env.useFragmentCache && dom.canClone) {
@@ -987,9 +1208,13 @@ define("trpo/templates/index",
           } else {
             fragment = this.build(dom);
           }
-          if (this.cachedFragment) { dom.repairClonedNode(fragment,[0]); }
-          var morph0 = dom.createMorphAt(fragment,0,1,contextualElement);
-          content(env, morph0, context, "outlet");
+          var element0 = dom.childAt(fragment, [0, 3, 1, 1, 3, 1]);
+          var morph0 = dom.createMorphAt(element0,0,1);
+          var morph1 = dom.createMorphAt(element0,1,2);
+          var morph2 = dom.createMorphAt(fragment,1,2,contextualElement);
+          block(env, morph0, context, "link-to", ["members"], {}, child0, null);
+          block(env, morph1, context, "link-to", ["parties"], {}, child1, null);
+          content(env, morph2, context, "outlet");
           return fragment;
         }
       };
