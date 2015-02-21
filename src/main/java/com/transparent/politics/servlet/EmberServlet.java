@@ -14,12 +14,12 @@ public class EmberServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String requestURI = request.getRequestURI();
-    	if (requestURI.startsWith("/index.html") ||requestURI.startsWith("/assets") || requestURI.startsWith("/fonts")) {
+    	if (requestURI.startsWith("/dist/index.html") ||requestURI.startsWith("/dist/assets") || requestURI.startsWith("/dist/fonts")) {
     		// Serve static content of the original request
 			getServletContext().getNamedDispatcher("default").forward(request, response);
     	} else {
     		// Forward request to the ember html file
-    		request.getRequestDispatcher("/index.html").forward(request, response);
+    		request.getRequestDispatcher("/dist/index.html").forward(request, response);
     	}
     }
 	
