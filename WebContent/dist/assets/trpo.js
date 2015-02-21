@@ -1167,7 +1167,7 @@ define("trpo/templates/index",
           var el5 = dom.createTextNode("\n				");
           dom.appendChild(el4, el5);
           var el5 = dom.createElement("p");
-          var el6 = dom.createTextNode("\n					בקרוב...\n				");
+          var el6 = dom.createTextNode("\n					בקרוב...	\n				");
           dom.appendChild(el5, el6);
           dom.appendChild(el4, el5);
           var el5 = dom.createTextNode("\n			");
