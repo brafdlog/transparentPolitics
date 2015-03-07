@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -41,11 +43,34 @@ public class GovMemberService {
     private AtomicBoolean isCalculating = new AtomicBoolean(false);
     
     public GovMembersDataStore getGovMemberDataStore() throws Exception {
+        return getGovMemberDataStore(true);
+    }
+    
+    public GovMembersDataStore getGovMemberDataStore(boolean calculateIfNotInCache) throws Exception {
         GovMembersDataStore govMembersDataStore = cacheManager.get(GOV_MEMBER_DATA_STORE_CACHE_KEY, GovMembersDataStore.class);
         if (govMembersDataStore == null) {
+            if (!calculateIfNotInCache) {
+                return null;
+            }
             recalculateMemberAndPartyGrades();
             govMembersDataStore = cacheManager.get(GOV_MEMBER_DATA_STORE_CACHE_KEY, GovMembersDataStore.class);
+        } else {
+            int daysSinceLastCalculation = Days.daysBetween(new LocalDate(govMembersDataStore.getCalculationDate()), new LocalDate()).getDays();
+            if (daysSinceLastCalculation > Config.DAYS_UNTIL_RECALCULATE && !isCalculating.get()) {
+                new Thread(new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        try {
+                            recalculateMemberAndPartyGrades();
+                        } catch (Exception e) {
+                            System.out.println("Error recalculating. " + e.getStackTrace());
+                        }
+                    }
+                }).start();
+            }
         }
+        
         return govMembersDataStore;
     }
     
