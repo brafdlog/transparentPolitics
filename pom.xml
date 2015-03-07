@@ -25,7 +25,7 @@
 	</plugin>
    </plugins>
    <!-- This is the name of the war -->
-   <finalName>${artifactId}</finalName>
+   <finalName>${project.artifactId}</finalName>
   </build>
   
    <properties>
