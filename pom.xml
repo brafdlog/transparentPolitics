@@ -40,6 +40,7 @@
 		<guava.version>18.0</guava.version>
 		<jedis.version>2.6.2</jedis.version>
 		<jedisLock.version>1.0.0</jedisLock.version>
+		<apacheCommons.version>3.3.2</apacheCommons.version>
     </properties>
   
 	<repositories>
@@ -115,6 +116,11 @@
 		    <type>jar</type>
 		    <scope>compile</scope>
 		</dependency>
-        
+        <dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${apacheCommons.version}</version>
+		</dependency>
+		        
 	</dependencies>
 </project>
