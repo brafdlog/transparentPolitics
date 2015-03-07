@@ -24,6 +24,8 @@
 	  <version>2.6</version>
 	</plugin>
    </plugins>
+   <!-- This is the name of the war -->
+   <finalName>${artifactId}</finalName>
   </build>
   
    <properties>
