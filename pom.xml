@@ -41,6 +41,7 @@
 		<jedis.version>2.6.2</jedis.version>
 		<jedisLock.version>1.0.0</jedisLock.version>
 		<apacheCommons.version>3.3.2</apacheCommons.version>
+		<joda.version>2.7</joda.version>
     </properties>
   
 	<repositories>
@@ -120,6 +121,11 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>${apacheCommons.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>${joda.version}</version>
 		</dependency>
 		        
 	</dependencies>
