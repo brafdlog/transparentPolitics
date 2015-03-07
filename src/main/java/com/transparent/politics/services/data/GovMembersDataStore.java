@@ -1,12 +1,14 @@
 package com.transparent.politics.services.data;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
 public class GovMembersDataStore {
 
+    private final Date calculationDate;
     private final Map<Integer, GovMember> memberIdToMember;
     private final Map<Integer, Integer> memberIdToGrade;
     private final Map<String, GovParty> partyNameToParty;
@@ -15,6 +17,7 @@ public class GovMembersDataStore {
         this.memberIdToMember = ImmutableMap.copyOf(memberIdToMember);
         this.memberIdToGrade = ImmutableMap.copyOf(memberIdToGrade);
         this.partyNameToParty = ImmutableMap.copyOf(partyNameToParty);
+        this.calculationDate = new Date();
     }
 
     public Integer getGovMemberGrade(Integer memeberId) {
@@ -33,4 +36,8 @@ public class GovMembersDataStore {
         return partyNameToParty.get(partyName);
     }
 
+    public Date getCalculationDate() {
+        return calculationDate;
+    }
+    
 }
