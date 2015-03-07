@@ -83,4 +83,9 @@ public class TransparentPoliticsServiceRest {
 	public void recalculateGrades() throws Exception {
 	    govMemberService.recalculateMemberAndPartyGrades();
 	}
+	
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String tempTest() throws Exception {
+        return "V1";
+    }
 }
