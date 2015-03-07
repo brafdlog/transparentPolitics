@@ -35,6 +35,7 @@
   </build>
   
    <properties>
+   		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>4.1.4.RELEASE</spring.version>
         <resteasy.version>3.0.9.Final</resteasy.version>
 		<jackson.databind-version>2.2.3</jackson.databind-version>
