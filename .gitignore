@@ -31,3 +31,5 @@ hs_err_pid*
 /trpo/testem.log
 /trpo/vendor
 /trpo/tests
+
+/WebContent/dist/
