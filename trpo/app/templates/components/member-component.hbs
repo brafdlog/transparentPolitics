@@ -1,0 +1,26 @@
+<div class="member-container" {{action "toggleMemberState"}}>
+	<div class="member-inner">
+		<div class="front" {{bind-attr style=inlineStyle}}>
+			<img class="party-logo" {{bind-attr src=data.party.imageUrl}}>
+			<div class="name">
+				<span class="badge">{{number-incrementor index}}</span> {{data.name}}
+				<h3 class="grade">
+					{{data.grade}}
+				</h3>
+			</div>
+		</div>	
+		<div class="back">
+			<ul class="list-unstyled">
+				<li>
+					<a {{bind-attr href=memberLink}} onclick="event.stopPropagation();" target="_blank">{{data.name}}</a> 
+					- 
+					(<a {{bind-attr href=partyLink}} onclick="event.stopPropagation();" target="_blank">{{data.party.name}}</a>)
+				</li>
+				<li>ציון - {{data.grade}}</li>
+				<li>ממוצע נוכחות שבועי - {{data.averageWeeklyPresenceHours}}</li>
+				<li>ממוצע נוכחות וועדות חודשי - {{data.averageMonthlyCommitteePresence}}</li>
+				<li>הצעות חוק - {{data.proposedBills}} (אושרו - {{data.approvedBills}})</li>
+			</ul>
+		</div>
+	</div>
+</div>

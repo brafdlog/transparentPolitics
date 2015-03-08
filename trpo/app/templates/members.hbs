@@ -1,0 +1,21 @@
+<section class="members-page">
+	<div class="members-title title">
+		<h1>חברי כנסת</h1>
+		{{input type="search" class="form-control" placeholder="חפש חבר כנסת" value=searchTerm}}
+		{{#each party in parties}}
+			{{party-label data=party action='filterParties'}}
+		{{/each}}
+	</div>
+
+	<section class="members-list container-fluid">
+		<div class="row">
+			{{#each memeber in filterdMembers}}
+				{{member-component data=memeber index=_view.contentIndex}}
+			{{else}}
+				<p class="no-results">לא נמצא תוצאות. אנא <b>נסה שנית.</b></p>
+			{{/each}}
+		</div>
+	</section>
+</section>
+
+{{outlet}}

@@ -11,3 +11,23 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 /target/
+
+
+
+# compiled output
+/trpo/dist
+/trpo/tmp
+
+# dependencies
+/trpo/node_modules
+/trpo/bower_components
+
+# misc
+/trpo/.sass-cache
+/trpo/connect.lock
+/trpo/coverage/*
+/trpo/libpeerconnection.log
+/trpo/npm-debug.log
+/trpo/testem.log
+/trpo/vendor
+/trpo/tests
