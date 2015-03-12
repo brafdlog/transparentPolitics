@@ -1,11 +1,10 @@
 import Ember from 'ember';
 
 export default Ember.ObjectController.extend({
-	/*chartMode: 'StockChart', // Available options: a falsy value, 'StockChart', 'Map'.
-                           // If `mode` is not provided or is a falsy value, the chart is initialized in Charts mode.
-                           // If `mode` is a string, it is passed to Highcharts as the first argument.
-                           // When Highcharts introduces a new mode, you will be able to use it here right away.*/
-
+	shareHREF: function() {
+		return '//trapol.us/members/' + this.get('id')
+	}.property('id'),
+	
 	chartOptions: {
 		chart: {
 			type: 'bar'

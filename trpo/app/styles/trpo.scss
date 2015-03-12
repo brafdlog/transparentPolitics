@@ -31,8 +31,14 @@ html, body {
 
 		.members-title {
 			margin-bottom: 20px;
+			
 			[type="search"] {
 				margin-bottom: 20px;
+			}
+
+			.fb-share-button {
+			  	line-height: 27px;
+				margin-right: 10px;
 			}
 		}
 

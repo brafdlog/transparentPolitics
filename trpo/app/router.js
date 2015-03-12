@@ -9,6 +9,7 @@ Router.map(function() {
   this.route("members");
   this.route("parties");
   this.resource("member", { path: '/members/:member_id' });
+  this.route("about");
 });
 
 export default Router;

@@ -4,7 +4,7 @@
 			<div class="container-fluid">
 				<div class="row inner-row">
 					<div class="col-xs-12 col-md-12 col-lg-12 col-inner">
-						{{#link-to 'members' class="back-link"}}< חזרה{{/link-to}}
+						{{#link-to 'members' class="back-link"}}חזרה{{/link-to}}
 					</div>
 					<div class="col-xs-12 col-md-3 col-lg-3 col-inner">
 						<img class="member-image" {{bind-attr src=imageUrl}}>
@@ -18,6 +18,9 @@
 							<strong>עצות חוק שהתקבלו</strong> - {{approvedBills}}<br>
 							<strong>הצעות חוק שהוצעו</strong> - {{proposedBills}}
 						</p>
+					</div>
+					<div class="col-xs-12 col-md-12 col-lg-12 col-inner">
+						<div class="fb-share-button" {{bind-attr data-href=shareHREF}} data-layout="button"></div>
 					</div>
 				</div>
 			</div>
