@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-	classNames: ['member', 'col-xs-6', 'col-md-3', 'col-lg-2'],
+	classNames: ['member', 'col-xs-12', 'col-md-4', 'col-lg-3'],
 	classNameBindings: ['flipped'],
 	
 	inlineStyle: function(){

@@ -23,5 +23,6 @@ var app = new EmberApp({
 
 app.import('bower_components/animate.css/animate.css');
 app.import('bower_components/jquery.transit/jquery.transit.js');
+app.import('bower_components/highcharts-release/highcharts.src.js');
 
 module.exports = app.toTree();

@@ -1,2 +1,30 @@
-test
-{{id}}
+<div class="member-page container-fluid">
+	<div class="row">
+		<div class="col-xs-12 col-md-6 col-lg-6">
+			<div class="container-fluid">
+				<div class="row inner-row">
+					<div class="col-xs-12 col-md-12 col-lg-12 col-inner">
+						{{#link-to 'members' class="back-link"}}< חזרה{{/link-to}}
+					</div>
+					<div class="col-xs-12 col-md-3 col-lg-3 col-inner">
+						<img class="member-image" {{bind-attr src=imageUrl}}>
+					</div>
+					<div class="col-xs-12 col-md-9 col-lg-9 col-inner">
+						<h1>{{name}}</h1>
+						<p>
+							<strong>ציון</strong> - {{grade}}<br>
+							<strong>ממוצע נוכחות שבועי במליאת הכנסת</strong> - {{averageWeeklyPresenceHours}}<br>
+							<strong>ממוצע נוכחות חודשי בוועדות</strong> - {{averageMonthlyCommitteePresence}}<br>
+							<strong>עצות חוק שהתקבלו</strong> - {{approvedBills}}<br>
+							<strong>הצעות חוק שהוצעו</strong> - {{proposedBills}}
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-xs-12 col-md-6 col-lg-6 ltr">
+			{{high-charts mode=chartMode content=chartData chartOptions=chartOptions}}
+		</div>
+	</div>
+</div>
