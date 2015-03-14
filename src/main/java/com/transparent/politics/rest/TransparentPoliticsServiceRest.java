@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +45,12 @@ public class TransparentPoliticsServiceRest {
 	}
 	
     @RequestMapping("/members/{memberId}")
-    public GovMemberRdt getMember(@PathVariable Integer memberId) throws Exception {
+    public Map<String, GovMemberRdt> getMember(@PathVariable Integer memberId) throws Exception {
         GovMembersDataStore govMemberDataStore = govMemberService.getGovMemberDataStore();
         GovMemberRdt govMemberRdt = restTypeConverter.toGovMemberRdt(govMemberDataStore, memberId);
-        return govMemberRdt;
+        Map<String, GovMemberRdt> retValue = new HashMap<>(1);
+        retValue.put("member", govMemberRdt);
+        return retValue;
     }
 	
 	@RequestMapping("/parties")
