@@ -1,5 +1,6 @@
-<div class="member-container" {{action "toggleMemberState"}}>
+<div class="member-container">
 	<div class="member-inner">
+		{{#link-to 'member' data.id}}
 		<div class="front" {{bind-attr style=inlineStyle}}>
 			<img class="party-logo" {{bind-attr src=data.party.imageUrl}}>
 			<div class="name">
@@ -9,19 +10,6 @@
 				</h3>
 			</div>
 		</div>	
-		<div class="back">
-			<ul class="list-unstyled">
-				<li>
-					{{!-- <a {{bind-attr href=memberLink}} onclick="event.stopPropagation();" target="_blank">{{data.name}}</a>  --}}
-					{{#link-to 'member' data.id}}{{data.name}}{{/link-to}}
-					- 
-					(<a {{bind-attr href=partyLink}} onclick="event.stopPropagation();" target="_blank">{{data.party.name}}</a>)
-				</li>
-				<li>ציון - {{data.grade}}</li>
-				<li>ממוצע נוכחות שבועי - {{data.averageWeeklyPresenceHours}}</li>
-				<li>ממוצע נוכחות וועדות חודשי - {{data.averageMonthlyCommitteePresence}}</li>
-				<li>הצעות חוק - {{data.proposedBills}} (אושרו - {{data.approvedBills}})</li>
-			</ul>
-		</div>
+		{{/link-to}}
 	</div>
 </div>
