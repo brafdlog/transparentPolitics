@@ -13,7 +13,10 @@ cd ~/transparentPolitics/trpo/
 ember build >> buildLog
 cd ~
 echo Shutting down tomcat
+# Failing to shutdown tomcat should not break build (will happen if tomcat was already shutdown)
+set +e
 sh ~/tomcat/bin/shutdown.sh >> buildLog
+set -e
 echo Deleting old tomcat dir
 rm -rf ~/tomcat/webapps/ROOT
 mkdir ~/tomcat/webapps/ROOT
