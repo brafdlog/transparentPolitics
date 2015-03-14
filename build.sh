@@ -30,4 +30,6 @@ cp ~/transparentPolitics/WebContent/WEB-INF/servlet-context.xml ~/tomcat/webapps
 echo Starting tomcat
 cd ~/tomcat/bin
 sh startup.sh >> buildLog
+echo Start calculation of members
+curl trapol.us > /dev/null
 echo Finished!!
