@@ -4,6 +4,9 @@ echo Pulling from git
 git pull
 echo Running maven
 mvn install
+echo Building ember
+cd ~/transparentPolitics/trpo/
+ember build
 echo Shutting down tomcat
 shutdown_tomcat
 echo Deleting old tomcat dir
