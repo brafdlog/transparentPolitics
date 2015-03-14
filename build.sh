@@ -13,7 +13,7 @@ cd ~/transparentPolitics/trpo/
 ember build >> buildLog
 cd ~
 echo Shutting down tomcat
-shutdown_tomcat >> buildLog
+sh ~/tomcat/bin/shutdown.sh >> buildLog
 echo Deleting old tomcat dir
 rm -rf ~/tomcat/webapps/ROOT
 mkdir ~/tomcat/webapps/ROOT
