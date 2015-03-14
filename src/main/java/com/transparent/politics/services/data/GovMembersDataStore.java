@@ -12,11 +12,14 @@ public class GovMembersDataStore {
     private final Map<Integer, GovMember> memberIdToMember;
     private final Map<Integer, Integer> memberIdToGrade;
     private final Map<String, GovParty> partyNameToParty;
+    private final Map<String, Integer> partyNameToGrade;
 
-    public GovMembersDataStore(Map<Integer, GovMember> memberIdToMember, Map<Integer, Integer> memberIdToGrade, Map<String, GovParty> partyNameToParty) {
+    public GovMembersDataStore(Map<Integer, GovMember> memberIdToMember, Map<Integer, Integer> memberIdToGrade, Map<String, GovParty> partyNameToParty,
+            Map<String, Integer> partyNameToGrade) {
         this.memberIdToMember = ImmutableMap.copyOf(memberIdToMember);
         this.memberIdToGrade = ImmutableMap.copyOf(memberIdToGrade);
         this.partyNameToParty = ImmutableMap.copyOf(partyNameToParty);
+        this.partyNameToGrade = ImmutableMap.copyOf(partyNameToGrade);
         this.calculationDate = new Date();
     }
 
@@ -34,6 +37,10 @@ public class GovMembersDataStore {
     
     public GovParty getPartyByName(String partyName) {
         return partyNameToParty.get(partyName);
+    }
+    
+    public Integer getPartyGrade(String partyName) {
+        return partyNameToGrade.get(partyName);
     }
 
     public Date getCalculationDate() {

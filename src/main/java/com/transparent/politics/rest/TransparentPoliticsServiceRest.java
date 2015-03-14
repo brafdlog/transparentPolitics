@@ -1,6 +1,5 @@
 package com.transparent.politics.rest;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,7 +51,7 @@ public class TransparentPoliticsServiceRest {
     }
 	
 	@RequestMapping("/parties")
-	public GovPartyListRdt getParties() throws IOException {
+	public GovPartyListRdt getParties() throws Exception {
 	    List<? extends GovParty> allParties = govPartyDAO.getAllParties();
 	    GovPartyListRdt govPartyListRdt = restTypeConverter.toGovPartyListRdt(allParties);
 	    return govPartyListRdt;
@@ -60,7 +59,7 @@ public class TransparentPoliticsServiceRest {
 	
 	@SuppressWarnings("serial")
 	@RequestMapping("/parties/{partyId}")
-    public HashMap<String, GovPartyRdt> getParty(@PathVariable Integer partyId) throws IOException {
+    public HashMap<String, GovPartyRdt> getParty(@PathVariable Integer partyId) throws Exception {
         GovParty govParty = govPartyDAO.getParty(partyId);
         final GovPartyRdt govPartyRdt = restTypeConverter.toGovPartyRdt(govParty);
         return new HashMap<String, GovPartyRdt>(){{

@@ -1,17 +1,21 @@
 package com.transparent.politics.services;
 
-import java.util.Random;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.transparent.politics.dao.PartyImageUrl;
+import com.transparent.politics.services.data.GovMembersDataStore;
 import com.transparent.politics.services.data.GovParty;
 
 @Component
 public class GovPartyService {
 
-    public Integer getPartyGrade(GovParty party) {
-        return new Random().nextInt(100);
+    @Autowired
+    private GovMemberService govMemberService;
+    
+    public Integer getPartyGrade(GovParty party) throws Exception {
+        GovMembersDataStore govMemberDataStore = govMemberService.getGovMemberDataStore();
+        return govMemberDataStore.getPartyGrade(party.getName());
     }
     
     /**

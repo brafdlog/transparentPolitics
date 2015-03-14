@@ -111,7 +111,9 @@ public class GovMemberService {
         List<? extends GovParty> allParties = govPartyDAO.getAllParties();
         Map<String, GovParty> partyNameToPartyMap = buildPartyNameToPartyMap(allParties);
         
-        GovMembersDataStore govMemberDataStore = new GovMembersDataStore(memberIdToMember, memberIdToGrade, partyNameToPartyMap);
+        Map<String, Integer> partyNameToGrade = calculatePartyGrades(memberIdToMember, memberIdToGrade);
+        
+        GovMembersDataStore govMemberDataStore = new GovMembersDataStore(memberIdToMember, memberIdToGrade, partyNameToPartyMap, partyNameToGrade);
         cacheManager.set(GOV_MEMBER_DATA_STORE_CACHE_KEY, govMemberDataStore);
         
         isCalculating.set(false);
@@ -120,12 +122,45 @@ public class GovMemberService {
         System.out.println("Recalculating grades: finished. Took " + durationInSeconds + " seconds.");
     }
 
+    private Map<String, Integer> calculatePartyGrades(Map<Integer, GovMember> memberIdToMember, Map<Integer, Integer> memberIdToGrade) {
+        Map<String, Integer> partyNameToGrade = new HashMap<>();
+        Map<String, List<Integer>> partyNameToMemberGrades = new HashMap<>();
+        
+        for (Integer memberId : memberIdToGrade.keySet()) {
+            GovMember member = memberIdToMember.get(memberId);
+            Integer memberGrade = memberIdToGrade.get(memberId);
+            String partyName = member.getPartyName();
+            if (!partyNameToMemberGrades.containsKey(partyName)) {
+                partyNameToMemberGrades.put(partyName, new ArrayList<Integer>());
+            }
+            partyNameToMemberGrades.get(partyName).add(memberGrade);
+        }
+        
+        for (String partyName : partyNameToMemberGrades.keySet()) {
+            List<Integer> memberGrades = partyNameToMemberGrades.get(partyName);
+            double averageGrade = getAverage(memberGrades);
+            partyNameToGrade.put(partyName, (int) averageGrade);
+        }
+        return partyNameToGrade;
+    }
+
     private double getMemberGrade(GovMember member, int memberWeeklyPresenceGrade, int monthlyCommitteePresenceGrade, int billsPreGrade, int billsProposedGrade, int billsApprovedGrade) throws IOException {
     	double overallGrade = getAverage(memberWeeklyPresenceGrade, monthlyCommitteePresenceGrade, billsPreGrade, billsProposedGrade, billsApprovedGrade);
         
         // The grade is between 0 and 119. We want to get a grade in the range [0,100]
         return overallGrade/1.2;
     }
+    
+    private double getAverage(List<Integer> grades) {
+        Integer sum = 0;
+        if(!grades.isEmpty()) {
+          for (Integer mark : grades) {
+              sum += mark;
+          }
+          return sum.doubleValue() / grades.size();
+        }
+        return sum;
+      }
     
     private double getAverage(int... partialGrades) {
         int numValidFactors = 0;

@@ -52,7 +52,7 @@ public class RestTypeConverter {
         return govMemberRdt;
     }
     
-    public GovPartyListRdt toGovPartyListRdt(Collection<? extends GovParty> govParties) {
+    public GovPartyListRdt toGovPartyListRdt(Collection<? extends GovParty> govParties) throws Exception {
         GovPartyListRdt govPartyListRdt = new GovPartyListRdt();
         for (GovParty party : govParties) {
             String partyImageUrl = partyService.getPartyImageUrl(party);
@@ -63,7 +63,7 @@ public class RestTypeConverter {
         return govPartyListRdt;
     }
     
-    public GovPartyRdt toGovPartyRdt(GovParty govParty) {
+    public GovPartyRdt toGovPartyRdt(GovParty govParty) throws Exception {
         Integer partyGrade = partyService.getPartyGrade(govParty);
         GovPartyRdt govPartyRdt = new GovPartyRdt();
         govPartyRdt.setId(govParty.getId());
