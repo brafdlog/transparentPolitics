@@ -47,7 +47,18 @@ public class GovMemberService {
     @PostConstruct
     public void init() {
         try {
-            getGovMemberDataStore();
+            Thread thread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        getGovMemberDataStore();
+                    } catch (Exception e) {
+                    }
+                }
+            });
+            thread.setDaemon(true);
+            thread.start();
         } catch (Exception e) {
             System.out.println("Failed calculating members on init " + e);
             e.printStackTrace();
