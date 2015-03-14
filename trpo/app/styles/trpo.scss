@@ -23,6 +23,99 @@ html, body {
 		max-height: 100%;
 	}
 
+	.member {
+		@include display-flex;
+		@include flex-direction(column);
+		@include user-select(none);
+		position: relative;
+		text-align: center;
+		border: 1px solid $color-1;
+		cursor: pointer;
+		z-index: 1;
+		background-color: #fff;
+
+		&.flipped .member-inner {
+			transform: rotateY(180deg);
+		}
+
+		.member-container {
+			@include perspective(1000px);
+
+			.member-inner {
+				@include transition(0.4s);
+				@include transform-style(preserve-3d);
+				position: relative;
+			}
+
+			.front, .back {
+				@include backface-visibility(hidden);
+				@include border-radius(4px);
+				position: absolute;
+				top: 0;
+				left: 0;
+				background-color: #fff;
+			}
+
+			.front {
+				@include display-flex;
+				@include align-items(center);
+				@include justify-content(center);
+				@include flex-direction(column);
+				@include transform(rotateY(0deg));
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: 50%;
+				border: 1px solid $color-3;
+				color: $color-1;
+				position: relative;
+				height: 150px;
+				position: relative;
+				z-index: 2;	
+
+				.party-logo {
+					position: absolute;
+					right: 10px;
+					top: 10px;
+					max-width: 25%;
+					max-height: 40%;
+				}
+
+				.name {
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					position: absolute;
+					width: 100%;
+					text-align: right;
+					bottom: 0;
+					padding: 3px 0;
+					background: rgba(0,0,0,0.7);
+					box-shadow: $box-shadow;
+					padding: 10px;
+					overflow: visible;
+				}
+
+			}
+
+			.back {
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				top: 0;
+				left: 0;
+				border: 1px solid $color-3;
+				transform: rotateY(180deg);
+				text-align: right;
+
+				> ul {
+					padding: 10px;
+					cursor: default;
+				}
+			}
+
+		}
+	}
+
 	.members-page {
 
 		.no-results {
@@ -39,102 +132,7 @@ html, body {
 			.fb-share-button {
 			  	line-height: 27px;
 				margin-right: 10px;
-			}
-		}
-
-		.members-list {
-			
-			.member {
-				@include display-flex;
-				@include flex-direction(column);
-				@include user-select(none);
-				position: relative;
-				text-align: center;
-				border: 1px solid $color-1;
-				cursor: pointer;
-				z-index: 1;
-				background-color: #fff;
-
-				&.flipped .member-inner {
-					transform: rotateY(180deg);
-				}
-
-				.member-container {
-					@include perspective(1000px);
-
-					.member-inner {
-						@include transition(0.4s);
-						@include transform-style(preserve-3d);
-						position: relative;
-					}
-
-					.front, .back {
-						@include backface-visibility(hidden);
-						@include border-radius(4px);
-						position: absolute;
-						top: 0;
-						left: 0;
-						background-color: #fff;
-					}
-
-					.front {
-						@include display-flex;
-						@include align-items(center);
-						@include justify-content(center);
-						@include flex-direction(column);
-						@include transform(rotateY(0deg));
-						background-size: contain;
-						background-repeat: no-repeat;
-						background-position: 50%;
-						border: 1px solid $color-3;
-						color: $color-1;
-						position: relative;
-						height: 150px;
-						position: relative;
-						z-index: 2;	
-
-						.party-logo {
-							position: absolute;
-							right: 10px;
-							top: 10px;
-							max-width: 25%;
-							max-height: 40%;
-						}
-
-						.name {
-							white-space: nowrap;
-							overflow: hidden;
-							text-overflow: ellipsis;
-							position: absolute;
-							width: 100%;
-							text-align: right;
-							bottom: 0;
-							padding: 3px 0;
-							background: rgba(0,0,0,0.7);
-							box-shadow: $box-shadow;
-							padding: 10px;
-							overflow: visible;
-						}
-
-					}
-
-					.back {
-						width: 100%;
-						height: 100%;
-						position: absolute;
-						top: 0;
-						left: 0;
-						border: 1px solid $color-3;
-						transform: rotateY(180deg);
-						text-align: right;
-
-						> ul {
-							padding: 10px;
-							cursor: default;
-						}
-					}
-
-				}
+				display: inline-block;
 			}
 		}
 	}
@@ -164,18 +162,29 @@ html, body {
 		}
 	}
 
-	.party {
-		@include display-flex;
-  		@include align-items(center);
-  		@include justify-content(center);
-		height: 100px;
-		text-align: center;
-		border: 1px solid #ddd;
+	.parties-list {
 
-  		.grade {
-  			top: 0;
-  			left: 0;
-  		}
+		.parties-container {
+			padding-top: 20px;
+		}
+
+		.party {
+			padding: 10px;	
+
+			.party-inner {
+				@include display-flex;
+		  		@include align-items(center);
+		  		@include justify-content(center);
+				height: 100px;
+				text-align: center;
+				border: 1px solid #ddd;
+
+		  		.grade {
+		  			top: 0;
+		  			left: 0;
+		  		}
+			}
+		}
 	}
 
 	.grade {

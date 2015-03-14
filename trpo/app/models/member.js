@@ -4,6 +4,7 @@ export default DS.Model.extend({
   name: DS.attr('string'),  
   imageUrl: DS.attr('string'),
   grade: DS.attr('number'),
+  allMembersAverageGrade: DS.attr('number'),
   averageWeeklyPresenceHours: DS.attr('number'),
   allMembersAverageWeeklyPresenceHours: DS.attr('number'),
   averageMonthlyCommitteePresence: DS.attr('number'),

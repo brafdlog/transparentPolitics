@@ -2,11 +2,13 @@
 	<div class="row">
 		{{input type="search" class="form-control" placeholder="חפש חבר כנסת או מפלגה" value=searchTerm}}
 	</div>
-	<div class="row">
+	<div class="row parties-container">
 		{{#each}}
 			<div class="party col-xs-6 col-md-3 col-lg-2">
-				<img {{bind-attr src=imageUrl}}>
-				<span class="grade">{{grade}}</span>
+				<div class="party-inner">
+					<img {{bind-attr src=imageUrl}}>
+					<span class="grade">{{grade}}</span>
+				</div>
 			</div>
 		{{/each}}
 	</div>

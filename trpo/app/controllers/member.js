@@ -23,13 +23,24 @@ export default Ember.ObjectController.extend({
 	},
 
 	chartData: function(){
+		var grade = Math.round(this.get('grade') * 100) / 100,
+			averageWeeklyPresenceHours = Math.round(this.get('averageWeeklyPresenceHours') * 100) / 100,
+			averageMonthlyCommitteePresence = Math.round(this.get('averageMonthlyCommitteePresence') * 100) / 100,
+			proposedBills = Math.round(this.get('proposedBills') * 100) / 100,
+			approvedBills = Math.round(this.get('approvedBills') * 100) / 100,
+			allMembersAverageGrade = Math.round(this.get('allMembersAverageGrade') * 100) / 100,
+			allMembersAverageWeeklyPresenceHours = Math.round(this.get('allMembersAverageWeeklyPresenceHours') * 100) / 100,
+			allMembersAverageMonthlyCommitteePresence = Math.round(this.get('allMembersAverageMonthlyCommitteePresence') * 100) / 100,
+			allMembersAverageProposedBills = Math.round(this.get('allMembersAverageProposedBills') * 100) / 100,
+			allMembersAverageApprovedBills = Math.round(this.get('allMembersAverageApprovedBills') * 100) / 100;
+
 		return [
 			{
 				name: this.get('name'),
-				data: [this.get('grade'), this.get('averageWeeklyPresenceHours'), this.get('averageMonthlyCommitteePresence'), this.get('proposedBills'), this.get('approvedBills')]
+				data: [grade, averageWeeklyPresenceHours, averageMonthlyCommitteePresence, proposedBills, approvedBills]
 			}, {
 				name: 'ממוצע',
-				data: [this.get('grade'), this.get('allMembersAverageWeeklyPresenceHours'), this.get('allMembersAverageMonthlyCommitteePresence'), this.get('allMembersAverageProposedBills'), this.get('allMembersAverageApprovedBills')]
+				data: [allMembersAverageGrade, allMembersAverageWeeklyPresenceHours, allMembersAverageMonthlyCommitteePresence, allMembersAverageProposedBills, allMembersAverageApprovedBills]
 			}
 		];	
 	}.property('grade'),

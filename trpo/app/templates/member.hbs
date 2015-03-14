@@ -11,16 +11,16 @@
 					</div>
 					<div class="col-xs-12 col-md-9 col-lg-9 col-inner">
 						<h1>{{name}}</h1>
+						<h4>ציון - <strong>{{grade}}</strong></h4>
 						<p>
-							<strong>ציון</strong> - {{grade}}<br>
-							<strong>ממוצע נוכחות שבועי במליאת הכנסת</strong> - {{averageWeeklyPresenceHours}}<br>
-							<strong>ממוצע נוכחות חודשי בוועדות</strong> - {{averageMonthlyCommitteePresence}}<br>
-							<strong>עצות חוק שהתקבלו</strong> - {{approvedBills}}<br>
-							<strong>הצעות חוק שהוצעו</strong> - {{proposedBills}}
+							ממוצע נוכחות שבועי במליאת הכנסת - <strong>{{averageWeeklyPresenceHours}}</strong><br>
+							ממוצע נוכחות חודשי בוועדות - <strong>{{averageMonthlyCommitteePresence}}</strong><br>
+							עצות חוק שהתקבלו - <strong>{{approvedBills}}</strong><br>
+							הצעות חוק שהוצעו - <strong>{{proposedBills}}</strong>
 						</p>
 					</div>
 					<div class="col-xs-12 col-md-12 col-lg-12 col-inner">
-						<div class="fb-share-button" {{bind-attr data-href=shareHREF}} data-layout="button"></div>
+						{{fb-like shareLink=shareHREF}}
 					</div>
 				</div>
 			</div>
