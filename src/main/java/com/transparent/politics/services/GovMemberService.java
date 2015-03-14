@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.annotation.PostConstruct;
+
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,16 @@ public class GovMemberService {
     private GovPartyDAO govPartyDAO;
     
     private AtomicBoolean isCalculating = new AtomicBoolean(false);
+    
+    @PostConstruct
+    public void init() {
+        try {
+            getGovMemberDataStore();
+        } catch (Exception e) {
+            System.out.println("Failed calculating members on init " + e);
+            e.printStackTrace();
+        }
+    }
     
     public GovMembersDataStore getGovMemberDataStore() throws Exception {
         return getGovMemberDataStore(true);
