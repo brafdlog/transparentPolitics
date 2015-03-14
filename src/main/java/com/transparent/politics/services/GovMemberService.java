@@ -118,8 +118,6 @@ public class GovMemberService {
         Map<GovMember, Integer> billsProposedGradeMap = getBillsProposedGradeMap(allGovMembers);
         Map<GovMember, Integer> billsApprovedGradeMap = getBillsApprovedGradeMap(allGovMembers);
 
-        GovMemberAverages govMemberAverages = getGovMemberAverages(allGovMembers);
-        
         Map<Integer, GovMember> memberIdToMember = new HashMap<>(allGovMembers.size());
         Map<Integer, Integer> memberIdToGrade = new HashMap<>(allGovMembers.size());
         
@@ -136,6 +134,8 @@ public class GovMemberService {
             memberIdToGrade.put(govMember.getId(), (int) memberOverallGrade);
         }
         
+        GovMemberAverages govMemberAverages = getGovMemberAverages(allGovMembers, memberIdToGrade.values());
+        
         List<? extends GovParty> allParties = govPartyDAO.getAllParties();
         Map<String, GovParty> partyNameToPartyMap = buildPartyNameToPartyMap(allParties);
         
@@ -150,11 +150,12 @@ public class GovMemberService {
         System.out.println("Recalculating grades: finished. Took " + durationInSeconds + " seconds.");
     }
 
-    private GovMemberAverages getGovMemberAverages(List<GovMember> allGovMembers) {
-        List<Integer> weeklyPresenceHours = new ArrayList<>();
-        List<Integer> monthlyCommitteePresenceHours = new ArrayList<>();
-        List<Integer> billsProposed = new ArrayList<>();
-        List<Integer> billsApproved = new ArrayList<>();
+    private GovMemberAverages getGovMemberAverages(List<GovMember> allGovMembers, Collection<Integer> allGrades) {
+        int numMembers = allGovMembers.size();
+        List<Integer> weeklyPresenceHours = new ArrayList<>(numMembers);
+        List<Integer> monthlyCommitteePresenceHours = new ArrayList<>(numMembers);
+        List<Integer> billsProposed = new ArrayList<>(numMembers);
+        List<Integer> billsApproved = new ArrayList<>(numMembers);
         for (GovMember member : allGovMembers) {
             if (member.getAverageWeeklyPresenceHours() != null) {
                 weeklyPresenceHours.add(member.getAverageWeeklyPresenceHours().intValue());
@@ -170,7 +171,9 @@ public class GovMemberService {
                 getAverage(weeklyPresenceHours),
                 getAverage(monthlyCommitteePresenceHours),
                 getAverage(billsProposed),
-                getAverage(billsApproved));
+                getAverage(billsApproved),
+                getAverage(allGrades)
+                );
         return govMemberAverages;
     }
 

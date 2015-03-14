@@ -6,12 +6,15 @@ public class GovMemberAverages {
     private final double averageMonthlyCommitteePresence;
     private final double averageProposedBills;
     private final double averageApprovedBills;
+    private final double averageGrade;
 
-    public GovMemberAverages(double averageWeeklyPresenceHours, double averageMonthlyCommitteePresence, double averageProposedBills, double averageApprovedBills) {
+    public GovMemberAverages(double averageWeeklyPresenceHours, double averageMonthlyCommitteePresence, double averageProposedBills, double averageApprovedBills,
+            double averageGrade) {
         this.averageWeeklyPresenceHours = averageWeeklyPresenceHours;
         this.averageMonthlyCommitteePresence = averageMonthlyCommitteePresence;
         this.averageProposedBills = averageProposedBills;
         this.averageApprovedBills = averageApprovedBills;
+        this.averageGrade = averageGrade;
     }
 
     public double getAverageWeeklyPresenceHours() {
@@ -30,4 +33,8 @@ public class GovMemberAverages {
         return averageApprovedBills;
     }
 
+    public double getAverageGrade() {
+        return averageGrade;
+    }
+    
 }

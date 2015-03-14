@@ -22,6 +22,7 @@ public class GovMemberRdt implements Comparable<GovMemberRdt> {
     private double allMembersAverageMonthlyCommitteePresence;
     private double allMembersAverageProposedBills;
     private double allMembersAverageApprovedBills;
+    private double allMembersAverageGrade;
 
     public Integer getId() {
         return id;
@@ -141,6 +142,14 @@ public class GovMemberRdt implements Comparable<GovMemberRdt> {
 
     public void setAllMembersAverageApprovedBills(double allMembersAverageApprovedBills) {
         this.allMembersAverageApprovedBills = allMembersAverageApprovedBills;
+    }
+    
+    public double getAllMembersAverageGrade() {
+        return allMembersAverageGrade;
+    }
+
+    public void setAllMembersAverageGrade(double allMembersAverageGrade) {
+        this.allMembersAverageGrade = allMembersAverageGrade;
     }
 
     @Override

@@ -54,6 +54,7 @@ public class RestTypeConverter {
         govMemberRdt.setAllMembersAverageMonthlyCommitteePresence(govMemberAverages.getAverageMonthlyCommitteePresence());
         govMemberRdt.setAllMembersAverageProposedBills(govMemberAverages.getAverageProposedBills());
         govMemberRdt.setAllMembersAverageApprovedBills(govMemberAverages.getAverageApprovedBills());
+        govMemberRdt.setAllMembersAverageGrade(govMemberAverages.getAverageGrade());
         
         GovParty party = govMemberDataStore.getPartyByName(govMember.getPartyName());
         govMemberRdt.setParty(party.getId());
