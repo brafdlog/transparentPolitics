@@ -11,6 +11,7 @@ mvn install >> buildLog
 echo Building ember
 cd ~/transparentPolitics/trpo/
 ember build >> buildLog
+cd ~
 echo Shutting down tomcat
 shutdown_tomcat >> buildLog
 echo Deleting old tomcat dir
