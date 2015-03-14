@@ -5,9 +5,13 @@ export default DS.Model.extend({
   imageUrl: DS.attr('string'),
   grade: DS.attr('number'),
   averageWeeklyPresenceHours: DS.attr('number'),
+  allMembersAverageWeeklyPresenceHours: DS.attr('number'),
   averageMonthlyCommitteePresence: DS.attr('number'),
+  allMembersAverageMonthlyCommitteePresence: DS.attr('number'),
   tromitBills: DS.attr('number'),
   proposedBills: DS.attr('number'),
+  allMembersAverageProposedBills: DS.attr('number'),
   approvedBills: DS.attr('number'),
+  allMembersAverageApprovedBills: DS.attr('number'),
   party: DS.belongsTo('party', { async: true })
 });
