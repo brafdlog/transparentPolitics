@@ -7,7 +7,7 @@ cd ~/transparentPolitics
 echo Pulling from git
 git pull >> buildLog
 echo Running maven
-mvn install >> buildLog
+mvn clean install >> buildLog
 echo Building ember
 cd ~/transparentPolitics/trpo/
 ember build >> buildLog
