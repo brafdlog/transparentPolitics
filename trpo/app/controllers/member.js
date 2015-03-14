@@ -4,7 +4,7 @@ export default Ember.ObjectController.extend({
 	shareHREF: function() {
 		return '//trapol.us/members/' + this.get('id')
 	}.property('id'),
-	
+
 	chartOptions: {
 		chart: {
 			type: 'bar'
@@ -27,7 +27,7 @@ export default Ember.ObjectController.extend({
 			name: 'דב חנין',
 			data: [9, 0, 4, 7, 10]
 		}, {
-			name: 'מומצע',
+			name: 'ממוצע',
 			data: [4, 7, 3, 4, 8]
 		}
 	]
