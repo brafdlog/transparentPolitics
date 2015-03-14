@@ -31,5 +31,6 @@ echo Starting tomcat
 cd ~/tomcat/bin
 sh startup.sh >> buildLog
 echo Start calculation of members
+sleep 5
 curl trapol.us > /dev/null
 echo Finished!!
