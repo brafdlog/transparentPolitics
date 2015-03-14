@@ -16,6 +16,12 @@ public class GovMemberRdt implements Comparable<GovMemberRdt> {
     private Integer proposedBills;
     private Integer approvedBills;
     private Integer partyId;
+    
+    //TODO these should not be repeated in every member
+    private double allMembersAverageWeeklyPresenceHours;
+    private double allMembersAverageMonthlyCommitteePresence;
+    private double allMembersAverageProposedBills;
+    private double allMembersAverageApprovedBills;
 
     public Integer getId() {
         return id;
@@ -95,6 +101,46 @@ public class GovMemberRdt implements Comparable<GovMemberRdt> {
 
     public void setApprovedBills(Integer approvedBills) {
         this.approvedBills = approvedBills;
+    }
+    
+    public Integer getPartyId() {
+        return partyId;
+    }
+
+    public void setPartyId(Integer partyId) {
+        this.partyId = partyId;
+    }
+
+    public double getAllMembersAverageWeeklyPresenceHours() {
+        return allMembersAverageWeeklyPresenceHours;
+    }
+
+    public void setAllMembersAverageWeeklyPresenceHours(double allMembersAverageWeeklyPresenceHours) {
+        this.allMembersAverageWeeklyPresenceHours = allMembersAverageWeeklyPresenceHours;
+    }
+
+    public double getAllMembersAverageMonthlyCommitteePresence() {
+        return allMembersAverageMonthlyCommitteePresence;
+    }
+
+    public void setAllMembersAverageMonthlyCommitteePresence(double allMembersAverageMonthlyCommitteePresence) {
+        this.allMembersAverageMonthlyCommitteePresence = allMembersAverageMonthlyCommitteePresence;
+    }
+
+    public double getAllMembersAverageProposedBills() {
+        return allMembersAverageProposedBills;
+    }
+
+    public void setAllMembersAverageProposedBills(double allMembersAverageProposedBills) {
+        this.allMembersAverageProposedBills = allMembersAverageProposedBills;
+    }
+
+    public double getAllMembersAverageApprovedBills() {
+        return allMembersAverageApprovedBills;
+    }
+
+    public void setAllMembersAverageApprovedBills(double allMembersAverageApprovedBills) {
+        this.allMembersAverageApprovedBills = allMembersAverageApprovedBills;
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.transparent.politics.rest.data.GovPartyRdt;
 import com.transparent.politics.services.GovMemberService;
 import com.transparent.politics.services.GovPartyService;
 import com.transparent.politics.services.data.GovMember;
+import com.transparent.politics.services.data.GovMemberAverages;
 import com.transparent.politics.services.data.GovMembersDataStore;
 import com.transparent.politics.services.data.GovParty;
 
@@ -47,6 +48,13 @@ public class RestTypeConverter {
         govMemberRdt.setProposedBills(govMember.getProposedBills());
         govMemberRdt.setApprovedBills(govMember.getApprovedBills());
         govMemberRdt.setGrade(govMemberGrade);
+        
+        GovMemberAverages govMemberAverages = govMemberDataStore.getGovMemberAverages();
+        govMemberRdt.setAllMembersAverageWeeklyPresenceHours(govMemberAverages.getAverageWeeklyPresenceHours());
+        govMemberRdt.setAllMembersAverageMonthlyCommitteePresence(govMemberAverages.getAverageMonthlyCommitteePresence());
+        govMemberRdt.setAllMembersAverageProposedBills(govMemberAverages.getAverageProposedBills());
+        govMemberRdt.setAllMembersAverageApprovedBills(govMemberAverages.getAverageApprovedBills());
+        
         GovParty party = govMemberDataStore.getPartyByName(govMember.getPartyName());
         govMemberRdt.setParty(party.getId());
         return govMemberRdt;
