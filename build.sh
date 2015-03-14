@@ -10,7 +10,7 @@ echo Running maven
 mvn clean install >> buildLog
 echo Building ember
 cd ~/transparentPolitics/trpo/
-ember build >> buildLog
+ember build --environment=production >> buildLog
 cd ~
 echo Shutting down tomcat
 # Failing to shutdown tomcat should not break build (will happen if tomcat was already shutdown)
