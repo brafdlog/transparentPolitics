@@ -1,6 +1,8 @@
 package com.transparent.politics.rest;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +21,10 @@ import com.transparent.politics.services.data.GovParty;
 
 @Component
 public class RestTypeConverter {
-    
+
     @Autowired
     private GovMemberService memberService;
-    
+
     @Autowired
     private GovPartyService partyService;
 
@@ -34,7 +36,7 @@ public class RestTypeConverter {
         }
         return membersListRdt;
     }
-    
+
     public GovMemberRdt toGovMemberRdt(GovMembersDataStore govMemberDataStore, Integer govMemberId) throws IOException {
         GovMember govMember = govMemberDataStore.getGovMember(govMemberId);
         Integer govMemberGrade = govMemberDataStore.getGovMemberGrade(govMemberId);
@@ -48,19 +50,19 @@ public class RestTypeConverter {
         govMemberRdt.setProposedBills(govMember.getProposedBills());
         govMemberRdt.setApprovedBills(govMember.getApprovedBills());
         govMemberRdt.setGrade(govMemberGrade);
-        
+
         GovMemberAverages govMemberAverages = govMemberDataStore.getGovMemberAverages();
-        govMemberRdt.setAllMembersAverageWeeklyPresenceHours(govMemberAverages.getAverageWeeklyPresenceHours());
-        govMemberRdt.setAllMembersAverageMonthlyCommitteePresence(govMemberAverages.getAverageMonthlyCommitteePresence());
-        govMemberRdt.setAllMembersAverageProposedBills(govMemberAverages.getAverageProposedBills());
-        govMemberRdt.setAllMembersAverageApprovedBills(govMemberAverages.getAverageApprovedBills());
-        govMemberRdt.setAllMembersAverageGrade(govMemberAverages.getAverageGrade());
-        
+        govMemberRdt.setAllMembersAverageWeeklyPresenceHours(roundNumber(govMemberAverages.getAverageWeeklyPresenceHours(), 1));
+        govMemberRdt.setAllMembersAverageMonthlyCommitteePresence(roundNumber(govMemberAverages.getAverageMonthlyCommitteePresence(), 1));
+        govMemberRdt.setAllMembersAverageProposedBills(roundNumber(govMemberAverages.getAverageProposedBills(), 1));
+        govMemberRdt.setAllMembersAverageApprovedBills(roundNumber(govMemberAverages.getAverageApprovedBills(), 1));
+        govMemberRdt.setAllMembersAverageGrade(roundNumber(govMemberAverages.getAverageGrade(), 1));
+
         GovParty party = govMemberDataStore.getPartyByName(govMember.getPartyName());
         govMemberRdt.setParty(party.getId());
         return govMemberRdt;
     }
-    
+
     public GovPartyListRdt toGovPartyListRdt(Collection<? extends GovParty> govParties) throws Exception {
         GovPartyListRdt govPartyListRdt = new GovPartyListRdt();
         for (GovParty party : govParties) {
@@ -71,7 +73,7 @@ public class RestTypeConverter {
         }
         return govPartyListRdt;
     }
-    
+
     public GovPartyRdt toGovPartyRdt(GovParty govParty) throws Exception {
         Integer partyGrade = partyService.getPartyGrade(govParty);
         GovPartyRdt govPartyRdt = new GovPartyRdt();
@@ -81,5 +83,9 @@ public class RestTypeConverter {
         govPartyRdt.setGrade(partyGrade);
         return govPartyRdt;
     }
-    
+
+    private double roundNumber(double number, int numDecimalDigits) {
+        return new BigDecimal(number).setScale(numDecimalDigits, RoundingMode.HALF_EVEN).doubleValue();
+    }
+
 }
